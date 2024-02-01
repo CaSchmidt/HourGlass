@@ -54,6 +54,19 @@ WWorkHours::WWorkHours(QWidget* parent, Qt::WindowFlags f)
   _model = new MonthModel(ui->hoursView);
   ui->hoursView->setModel(_model);
 
+  // Hours View Actions //////////////////////////////////////////////////////
+
+  {
+    QAction *action = nullptr;
+
+    action = new QAction(tr("Resize days"), ui->hoursView);
+    connect(action, &QAction::triggered,
+            this, &WWorkHours::resizeDays);
+    ui->hoursView->addAction(action);
+  }
+
+  ui->hoursView->setContextMenuPolicy(Qt::ActionsContextMenu);
+
   // Signals & Slots /////////////////////////////////////////////////////////
 
   connect(ui->addItemButton, &QPushButton::clicked,
@@ -95,19 +108,6 @@ void WWorkHours::updateProjects()
   // Data Model //////////////////////////////////////////////////////////////
 
   _model->updateProjects();
-
-  // Hours View Actions //////////////////////////////////////////////////////
-
-  {
-    QAction *action = nullptr;
-
-    action = new QAction(tr("Resize days"), ui->hoursView);
-    connect(action, &QAction::triggered,
-            this, &WWorkHours::resizeDays);
-    ui->hoursView->addAction(action);
-  }
-
-  ui->hoursView->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 ////// private slots /////////////////////////////////////////////////////////
