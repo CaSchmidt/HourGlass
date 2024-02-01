@@ -30,7 +30,6 @@ list(APPEND HourGlass_HEADERS
   include/MonthModel.h
   include/Project.h
   include/ProjectModel.h
-  include/ValueTable.h
   include/WMainWindow.h
   include/WProjects.h
   include/WWorkHours.h
