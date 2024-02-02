@@ -29,6 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <QtCore/QDate>
 #include <QtCore/QLocale>
 #include <QtGui/QBrush>
 
@@ -161,10 +162,18 @@ QVariant MonthModel::data(const QModelIndex& index,
     }
 
   } else if( role == Qt::BackgroundRole ) {
-    if( column == COL_Hours  &&  isItemRow(row) ) {
-      return QBrush(Qt::yellow);
-    } else if( isDayColumn(column)  &&  isDayHoursRow(row) ) {
-      return QBrush(Qt::yellow);
+    if(        isItemRow(row) ) {
+      if(        column == COL_Hours ) {
+        return QBrush(Qt::yellow);
+      } else if( isDayColumn(column) ) {
+        if( _month->isWeekend(column - Num_ItemColumns + 1) ) {
+          return QBrush(Qt::cyan);
+        }
+      }
+    } else if( isDayHoursRow(row) ) {
+      if( isDayColumn(column) ) {
+        return QBrush(Qt::yellow);
+      }
     }
 
   } // Qt::ItemDataRole
@@ -206,7 +215,14 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
       } else if( section == COL_Hours ) {
         return tr("Hours");
       } else if( isDayColumn(section) ) {
-        return section - Num_ItemColumns + 1;
+        const int day = section - Num_ItemColumns + 1;
+        if( _month->isMonday(day) ) {
+          return QStringLiteral("[%1] %2")
+              .arg(_month->weekNumber(day))
+              .arg(day);
+        } else {
+          return day;
+        }
       }
 
     } else if( orientation == Qt::Vertical ) {
