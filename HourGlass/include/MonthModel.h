@@ -68,6 +68,7 @@ public:
                int role);
 
 private:
+  static int day(const int column);
   bool isDayColumn(const int column) const;
   bool isDayHoursRow(const std::size_t row) const;
   bool isItemRow(const std::size_t row) const;

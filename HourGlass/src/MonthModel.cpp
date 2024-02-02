@@ -166,7 +166,7 @@ QVariant MonthModel::data(const QModelIndex& index,
       if(        column == COL_Hours ) {
         return QBrush(Qt::yellow);
       } else if( isDayColumn(column) ) {
-        if( _month->isWeekend(column - Num_ItemColumns + 1) ) {
+        if( _month->isWeekend(day(column)) ) {
           return QBrush(Qt::cyan);
         }
       }
@@ -215,7 +215,7 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
       } else if( section == COL_Hours ) {
         return tr("Hours");
       } else if( isDayColumn(section) ) {
-        const int day = section - Num_ItemColumns + 1;
+        const int day = MonthModel::day(section);
         if( _month->isMonday(day) ) {
           return QStringLiteral("[%1] %2")
               .arg(_month->weekNumber(day))
@@ -284,6 +284,11 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
 }
 
 ////// private ///////////////////////////////////////////////////////////////
+
+int MonthModel::day(const int column)
+{
+  return column - Num_ItemColumns + 1;
+}
 
 bool MonthModel::isDayColumn(const int column) const
 {
