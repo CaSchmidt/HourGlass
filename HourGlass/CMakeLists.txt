@@ -39,6 +39,7 @@ list(APPEND HourGlass_SOURCES
   src/Global.cpp
   src/Item.cpp
   src/main.cpp
+  src/Month.cpp
   src/MonthModel.cpp
   src/Project.cpp
   src/ProjectModel.cpp

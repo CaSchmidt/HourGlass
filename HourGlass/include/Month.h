@@ -31,64 +31,46 @@
 
 #pragma once
 
-#include <QtCore/QDate>
 #include <QtCore/QString>
 
 #include "Item.h"
 
+class QDate;
+
 struct Month {
-  Month(const int year = 0, const int month = 0) noexcept
-    : month{month}
-    , year{year}
-  {
-  }
+  Month(const int year = 0, const int month = 0) noexcept;
 
-  bool isValid() const
-  {
-    return year >= 2000  &&  1 <= month  &&  month <= 12;
-  }
+  bool isValid() const;
 
-  operator bool() const
+  inline operator bool() const
   {
     return isValid();
   }
 
-  int days() const
-  {
-    return QDate(year, month, 1).daysInMonth();
-  }
+  int id() const;
 
-  bool isMonth(const QDate& date) const
-  {
-    return date.year() == year  &&  date.month() == month;
-  }
+  int days() const;
+  bool isMonday(const int day) const;
+  bool isMonth(const QDate& date) const;
+  bool isWeekend(const int day) const;
+  QString toString() const;
+  int weekNumber(const int day) const;
 
-  QString toString() const
-  {
-    return QStringLiteral("%1-%2")
-        .arg(year,  4, 10, QLatin1Char('0'))
-        .arg(month, 2, 10, QLatin1Char('0'));
-  }
+  bool operator<(const Month& other) const;
+  bool operator==(const Month& other) const;
+  bool operator==(const int id) const;
 
   Items items;
-  int month{0};
-  int year{0};
+
+private:
+  int _month{0};
+  int _year{0};
 };
 
-inline bool operator<(const Month& a, const Month& b)
-{
-  if( a  &&  b ) {
-    if(        a.year <  b.year ) {
-      return true;
-    } else if( a.year == b.year  &&  a.month < b.month ) {
-      return true;
-    }
-  }
+using Months = std::vector<Month>;
 
-  return false;
-}
+bool addMonth(Months *list, Month month);
 
-inline bool operator==(const Month& a, const Month& b)
-{
-  return a  &&  b  &&  a.year == b.year  &&  a.month == b.month;
-}
+Month *findMonth(const Months& list, const int id);
+
+bool isMonth(const Months& list, const int id);
