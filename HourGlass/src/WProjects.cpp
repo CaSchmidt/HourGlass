@@ -49,8 +49,6 @@ WProjects::WProjects(QWidget* parent, Qt::WindowFlags f)
   _model = new ProjectModel(ui->tableView); // takes ownership!
   ui->tableView->setModel(_model);
 
-  Global::projects = _model;
-
   // Signals & Slots /////////////////////////////////////////////////////////
 
   connect(ui->addButton, &QPushButton::clicked,
@@ -63,6 +61,11 @@ WProjects::WProjects(QWidget* parent, Qt::WindowFlags f)
 WProjects::~WProjects()
 {
   delete ui;
+}
+
+ProjectModel *WProjects::model() const
+{
+  return _model;
 }
 
 ////// private slots /////////////////////////////////////////////////////////

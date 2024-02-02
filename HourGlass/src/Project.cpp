@@ -29,6 +29,8 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <algorithm>
+
 #include "Project.h"
 
 bool addProject(Projects *list, Project project)
@@ -46,4 +48,17 @@ bool addProject(Projects *list, Project project)
   list->push_back(std::move(project));
 
   return true;
+}
+
+Project findProject(const Projects& list, const projectid_t id,
+                    const Project& defValue)
+{
+  const auto hit = std::find_if(list.begin(), list.end(),
+                                [=](const Project& p) -> bool {
+    return p.id == id;
+  });
+
+  return hit != list.end()
+      ? *hit
+      : defValue;
 }

@@ -31,6 +31,8 @@
 
 #include "ProjectModel.h"
 
+#include "Global.h"
+
 ////// public ////////////////////////////////////////////////////////////////
 
 ProjectModel::ProjectModel(QObject *parent)
@@ -48,8 +50,10 @@ void ProjectModel::addProject(const QString& name)
     return;
   }
 
+  Projects *projects = &Global::projects;
+
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
-  ::addProject(&_projects, {static_cast<projectid_t>(_projects.size()), name});
+  ::addProject(projects, {static_cast<projectid_t>(projects->size()), name});
   endInsertRows();
 
   emit projectsChanged();
@@ -58,38 +62,16 @@ void ProjectModel::addProject(const QString& name)
 void ProjectModel::clearProjects()
 {
   beginResetModel();
-  _projects.clear();
+  Global::projects.clear();
   endResetModel();
 
   emit projectsChanged();
 }
 
-Project ProjectModel::project(const projectid_t id) const
-{
-  for(const Project& project : _projects) {
-    if( project.id == id ) {
-      return project;
-    }
-  }
-  return Project();
-}
-
-Project ProjectModel::projectAt(const std::size_t index) const
-{
-  return index < _projects.size()
-      ? _projects[index]
-        : Project();
-}
-
-std::size_t ProjectModel::projectCount() const
-{
-  return _projects.size();
-}
-
 void ProjectModel::setProjects(Projects projects)
 {
   beginResetModel();
-  _projects = std::move(projects);
+  Global::projects = std::move(projects);
   endResetModel();
 
   emit projectsChanged();
@@ -107,18 +89,20 @@ QVariant ProjectModel::data(const QModelIndex& index,
     return QVariant();
   }
 
+  const Projects& projects = Global::projects;
+
   if(        role == Qt::DisplayRole ) {
     const std::size_t row = index.row();
     if(        index.column() == COL_Id ) {
-      return _projects[row].id;
+      return projects[row].id;
     } else if( index.column() == COL_Name ) {
-      return _projects[row].name;
+      return projects[row].name;
     }
 
   } else if( role == Qt::EditRole ) {
     const std::size_t row = index.row();
     if( index.column() == COL_Name ) {
-      return _projects[row].name;
+      return projects[row].name;
     }
 
   }
@@ -153,7 +137,7 @@ QVariant ProjectModel::headerData(int section, Qt::Orientation orientation,
 
 int ProjectModel::rowCount(const QModelIndex& /*index*/) const
 {
-  return int(_projects.size());
+  return int(Global::projects.size());
 }
 
 bool ProjectModel::setData(const QModelIndex& index, const QVariant& value,
@@ -166,7 +150,7 @@ bool ProjectModel::setData(const QModelIndex& index, const QVariant& value,
   }
 
   const std::size_t row = index.row();
-  _projects[row].name = name;
+  Global::projects[row].name = name;
 
   emit dataChanged(index, index);
   emit projectsChanged();

@@ -33,6 +33,7 @@
 #include "ui_WMainWindow.h"
 
 #include "Global.h"
+#include "ProjectModel.h"
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -55,7 +56,7 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   connect(ui->quitAction, &QAction::triggered,
           this, &WMainWindow::close);
 
-  connect(Global::projects, &ProjectModel::projectsChanged,
+  connect(ui->projectsWidget->model(), &ProjectModel::projectsChanged,
           ui->hoursWidget, &WWorkHours::updateProjects);
 }
 

@@ -33,6 +33,6 @@
 
 namespace Global {
 
-  ProjectModel *projects{nullptr};
+  Projects projects;
 
 } // namespace Global

@@ -91,17 +91,10 @@ void WWorkHours::setMonth_TODO()
 
 void WWorkHours::updateProjects()
 {
-  if( Global::projects == nullptr ) {
-    return;
-  }
-
-  const ProjectModel *projects = Global::projects;
-
   // Projects Combo //////////////////////////////////////////////////////////
 
   ui->projectCombo->clear();
-  for(std::size_t i = 0; i < projects->projectCount(); i++) {
-    const Project p = projects->projectAt(i);
+  for(const Project& p : Global::projects) {
     ui->projectCombo->addItem(p.name, p.id);
   }
 

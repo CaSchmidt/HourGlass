@@ -45,6 +45,8 @@ public:
   WProjects(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
   ~WProjects();
 
+  ProjectModel *model() const;
+
 private slots:
   void addProject();
 

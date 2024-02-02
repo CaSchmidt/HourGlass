@@ -49,9 +49,6 @@ public:
 
   void addProject(const QString& name);
   void clearProjects();
-  Project project(const projectid_t id) const;
-  Project projectAt(const std::size_t index) const;
-  std::size_t projectCount() const;
   void setProjects(Projects projects);
 
   int columnCount(const QModelIndex& index) const;
@@ -63,9 +60,6 @@ public:
   int rowCount(const QModelIndex& index = QModelIndex()) const;
   bool setData(const QModelIndex& index, const QVariant& value,
                int role);
-
-private:
-  Projects _projects;
 
 signals:
   void projectsChanged();

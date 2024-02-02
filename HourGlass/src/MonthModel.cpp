@@ -54,7 +54,7 @@ void MonthModel::addItem(const projectid_t id)
     return;
   }
 
-  const Project p = Global::projects->project(id);
+  const Project p = findProject(Global::projects, id);
   if( !p ) {
     return;
   }
@@ -80,7 +80,7 @@ bool MonthModel::isCurrentMonth() const
 
 bool MonthModel::isValid() const
 {
-  return _month != nullptr  &&  Global::projects != nullptr;
+  return _month != nullptr;
 }
 
 void MonthModel::setMonth(Month *month)
@@ -101,7 +101,7 @@ void MonthModel::updateProjects()
   }
 
   for(Item& item : _month->items) {
-    const Project p = Global::projects->project(item.project.id);
+    const Project p = findProject(Global::projects, item.project.id);
     if( p ) {
       item.project.name = p.name;
     }

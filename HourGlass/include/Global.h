@@ -31,10 +31,14 @@
 
 #pragma once
 
-#include "ProjectModel.h"
+#include <type_traits>
+
+#include "Project.h"
+
+static_assert( std::is_unsigned_v<std::size_t> );
 
 namespace Global {
 
-  extern ProjectModel *projects;
+  extern Projects projects;
 
 } // namespace Global

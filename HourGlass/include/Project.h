@@ -36,8 +36,6 @@
 
 #include <QtCore/QString>
 
-static_assert( std::is_unsigned_v<std::size_t> );
-
 using projectid_t = unsigned;
 
 constexpr auto INVALID_PROJECTID = std::numeric_limits<projectid_t>::max();
@@ -67,3 +65,6 @@ struct Project {
 using Projects = std::vector<Project>;
 
 bool addProject(Projects *list, Project project);
+
+Project findProject(const Projects& list, const projectid_t id,
+                    const Project& defValue = Project());
