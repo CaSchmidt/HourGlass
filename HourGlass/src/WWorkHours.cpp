@@ -95,7 +95,7 @@ void WWorkHours::updateProjects()
 
   ui->projectCombo->clear();
   for(const Project& p : Global::projects) {
-    ui->projectCombo->addItem(p.name, p.id);
+    ui->projectCombo->addItem(p.name, p.id());
   }
 
   // Data Model //////////////////////////////////////////////////////////////

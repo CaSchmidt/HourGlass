@@ -94,7 +94,7 @@ QVariant ProjectModel::data(const QModelIndex& index,
   if(        role == Qt::DisplayRole ) {
     const std::size_t row = index.row();
     if(        index.column() == COL_Id ) {
-      return projects[row].id;
+      return projects[row].id();
     } else if( index.column() == COL_Name ) {
       return projects[row].name;
     }

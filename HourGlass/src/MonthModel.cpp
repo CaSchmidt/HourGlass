@@ -101,7 +101,7 @@ void MonthModel::updateProjects()
   }
 
   for(Item& item : _month->items) {
-    const Project p = findProject(Global::projects, item.project.id);
+    const Project p = findProject(Global::projects, item.project.id());
     if( p ) {
       item.project.name = p.name;
     }

@@ -42,24 +42,23 @@ constexpr auto INVALID_PROJECTID = std::numeric_limits<projectid_t>::max();
 
 struct Project {
   Project(const projectid_t id = INVALID_PROJECTID,
-          const QString& name = QString()) noexcept
-    : id{id}
-    , name(name)
-  {
-  }
+          const QString& name = QString()) noexcept;
 
-  bool isValid() const
-  {
-    return id != INVALID_PROJECTID  &&  !name.isEmpty();
-  }
+  bool isValid() const;
 
-  inline operator bool() const
+  inline explicit operator bool() const
   {
     return isValid();
   }
 
-  projectid_t id{INVALID_PROJECTID};
+  projectid_t id() const;
+
+  bool operator==(const projectid_t id) const;
+
   QString name;
+
+private:
+  projectid_t _id{INVALID_PROJECTID};
 };
 
 using Projects = std::vector<Project>;
@@ -68,3 +67,5 @@ bool addProject(Projects *list, Project project);
 
 Project findProject(const Projects& list, const projectid_t id,
                     const Project& defValue = Project());
+
+bool isProject(const Projects& list, const projectid_t id);

@@ -33,16 +33,35 @@
 
 #include "Project.h"
 
+////// public ////////////////////////////////////////////////////////////////
+
+Project::Project(const projectid_t id, const QString& name) noexcept
+  : name(name)
+  , _id{id}
+{
+}
+
+bool Project::isValid() const
+{
+  return _id != INVALID_PROJECTID  &&  !name.isEmpty();
+}
+
+projectid_t Project::id() const
+{
+  return _id;
+}
+
+bool Project::operator==(const projectid_t id) const
+{
+  return _id == id;
+}
+
+////// Public ////////////////////////////////////////////////////////////////
+
 bool addProject(Projects *list, Project project)
 {
-  if( list == nullptr  ||  !project ) {
+  if( list == nullptr  ||  !project  ||  isProject(*list, project.id()) ) {
     return false;
-  }
-
-  for(const Project& lp : *list) {
-    if( project.id == lp.id ) {
-      return false;
-    }
   }
 
   list->push_back(std::move(project));
@@ -53,12 +72,14 @@ bool addProject(Projects *list, Project project)
 Project findProject(const Projects& list, const projectid_t id,
                     const Project& defValue)
 {
-  const auto hit = std::find_if(list.begin(), list.end(),
-                                [=](const Project& p) -> bool {
-    return p.id == id;
-  });
+  const auto hit = std::find(list.cbegin(), list.cend(), id);
 
-  return hit != list.end()
+  return hit != list.cend()
       ? *hit
       : defValue;
+}
+
+bool isProject(const Projects& list, const projectid_t id)
+{
+  return std::find(list.cbegin(), list.cend(), id) != list.cend();
 }
