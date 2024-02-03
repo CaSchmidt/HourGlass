@@ -49,9 +49,19 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
   // Actions /////////////////////////////////////////////////////////////////
 
+  ui->openAction->setShortcut(Qt::CTRL + Qt::Key_O);
+  ui->saveAction->setShortcut(Qt::CTRL + Qt::Key_S);
   ui->quitAction->setShortcut(Qt::CTRL + Qt::Key_Q);
 
   // Signals & Slots /////////////////////////////////////////////////////////
+
+  connect(ui->openAction, &QAction::triggered,
+          this, &WMainWindow::open);
+
+  connect(ui->saveAction, &QAction::triggered,
+          this, &WMainWindow::save);
+  connect(ui->saveAsAction, &QAction::triggered,
+          this, &WMainWindow::saveAs);
 
   connect(ui->quitAction, &QAction::triggered,
           this, &WMainWindow::close);
@@ -63,4 +73,18 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
 WMainWindow::~WMainWindow()
 {
   delete ui;
+}
+
+////// private ///////////////////////////////////////////////////////////////
+
+void WMainWindow::open()
+{
+}
+
+void WMainWindow::save()
+{
+}
+
+void WMainWindow::saveAs()
+{
 }

@@ -102,6 +102,11 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="openAction"/>
+    <addaction name="separator"/>
+    <addaction name="saveAction"/>
+    <addaction name="saveAsAction"/>
+    <addaction name="separator"/>
     <addaction name="quitAction"/>
    </widget>
    <addaction name="fileMenu"/>
@@ -110,6 +115,21 @@
   <action name="quitAction">
    <property name="text">
     <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="openAction">
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+  </action>
+  <action name="saveAsAction">
+   <property name="text">
+    <string>Save &amp;as...</string>
+   </property>
+  </action>
+  <action name="saveAction">
+   <property name="text">
+    <string>&amp;Save</string>
    </property>
   </action>
  </widget>

@@ -43,6 +43,11 @@ public:
   WMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
   ~WMainWindow();
 
+private slots:
+  void open();
+  void save();
+  void saveAs();
+
 private:
   Ui::WMainWindow *ui{nullptr};
 };
