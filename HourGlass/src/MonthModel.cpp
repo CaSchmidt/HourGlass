@@ -98,6 +98,11 @@ bool MonthModel::isValid() const
   return _month != nullptr;
 }
 
+Month *MonthModel::month() const
+{
+  return _month;
+}
+
 void MonthModel::setMonth(Month *month)
 {
   if( month == nullptr  ||  !month->isValid() ) {

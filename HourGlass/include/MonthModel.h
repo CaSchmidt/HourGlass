@@ -56,10 +56,11 @@ public:
   bool isCurrentMonth() const;
   bool isDayColumn(const int column) const;
   bool isValid() const;
+  Month *month() const;
   void setMonth(Month *month);
   void updateProjects();
 
-  int columnCount(const QModelIndex& index) const;
+  int columnCount(const QModelIndex& index = QModelIndex()) const;
   QVariant data(const QModelIndex& index,
                 int role) const;
   Qt::ItemFlags flags(const QModelIndex& index) const;
