@@ -90,7 +90,7 @@ void WMainWindow::open()
 void WMainWindow::save()
 {
   if( _lastfilename.isEmpty() ) {
-    saveAs();
+    getSaveFilename();
     if( _lastfilename.isEmpty() ) { // No filename chosen!
       return;
     }
@@ -123,6 +123,14 @@ void WMainWindow::save()
 
 void WMainWindow::saveAs()
 {
+  getSaveFilename();
+  save();
+}
+
+////// private ///////////////////////////////////////////////////////////////
+
+void WMainWindow::getSaveFilename()
+{
   const QString dir = !_lastfilename.isEmpty()
       ? QFileInfo(_lastfilename).canonicalPath()
       : QString();
@@ -135,6 +143,4 @@ void WMainWindow::saveAs()
   }
 
   _lastfilename = filename;
-
-  save();
 }

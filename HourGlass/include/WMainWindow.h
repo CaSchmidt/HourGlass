@@ -49,6 +49,8 @@ private slots:
   void saveAs();
 
 private:
+  void getSaveFilename();
+
   Ui::WMainWindow *ui{nullptr};
 
   QString _lastfilename;
