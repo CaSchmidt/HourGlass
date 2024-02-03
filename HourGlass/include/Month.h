@@ -50,6 +50,7 @@ struct Month {
   int id() const;
 
   int days() const;
+  bool isCurrentDay(const int day) const;
   bool isMonday(const int day) const;
   bool isMonth(const QDate& date) const;
   bool isWeekend(const int day) const;

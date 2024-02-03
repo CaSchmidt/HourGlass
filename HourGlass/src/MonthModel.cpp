@@ -245,6 +245,14 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
       }
 
     }
+
+  } else if( role == Qt::ForegroundRole ) {
+    if( isDayColumn(section) ) {
+      if( _month->isCurrentDay(day(section)) ) {
+        return QBrush(Qt::red);
+      }
+    }
+
   } // DisplayRole
 
   return QVariant();

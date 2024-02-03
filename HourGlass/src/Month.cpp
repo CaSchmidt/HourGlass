@@ -60,6 +60,11 @@ int Month::days() const
   return QDate(_year, _month, 1).daysInMonth();
 }
 
+bool Month::isCurrentDay(const int day) const
+{
+  return QDate(_year, _month, day) == QDate::currentDate();
+}
+
 bool Month::isMonday(const int day) const
 {
   return QDate(_year, _month, day).dayOfWeek() == Qt::Monday;
