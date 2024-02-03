@@ -54,9 +54,13 @@ public slots:
 
 private slots:
   void addItem();
-  void resizeDays();
+  void resizeColumns();
+  void showMonth();
+  void showWeek();
 
 private:
+  void initHoursMenu();
+
   MonthModel *_model{nullptr};
   Ui::WWorkHours *ui{nullptr};
   Month _month; // TODO

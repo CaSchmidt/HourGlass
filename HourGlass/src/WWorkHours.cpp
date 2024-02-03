@@ -56,16 +56,7 @@ WWorkHours::WWorkHours(QWidget* parent, Qt::WindowFlags f)
 
   // Hours View Actions //////////////////////////////////////////////////////
 
-  {
-    QAction *action = nullptr;
-
-    action = new QAction(tr("Resize days"), ui->hoursView);
-    connect(action, &QAction::triggered,
-            this, &WWorkHours::resizeDays);
-    ui->hoursView->addAction(action);
-  }
-
-  ui->hoursView->setContextMenuPolicy(Qt::ActionsContextMenu);
+  initHoursMenu();
 
   // Signals & Slots /////////////////////////////////////////////////////////
 
@@ -111,11 +102,66 @@ void WWorkHours::addItem()
   _model->addItem(id);
 }
 
-void WWorkHours::resizeDays()
+void WWorkHours::resizeColumns()
 {
   QHeaderView *view = ui->hoursView->horizontalHeader();
   if( view == nullptr ) {
     return;
   }
   view->resizeSections(QHeaderView::ResizeToContents);
+}
+
+void WWorkHours::showMonth()
+{
+  QHeaderView *view = ui->hoursView->horizontalHeader();
+  if( view == nullptr ) {
+    return;
+  }
+
+  for(int i = MonthModel::Num_ItemColumns; i < _model->columnCount(); i++) {
+    view->showSection(i);
+  }
+}
+
+void WWorkHours::showWeek()
+{
+  QHeaderView *view = ui->hoursView->horizontalHeader();
+  if( view == nullptr  ||  !_model->isValid() ) {
+    return;
+  }
+
+  const int currentWeek = QDate::currentDate().weekNumber();
+  const Month *month = _model->month();
+
+  for(int i = MonthModel::Num_ItemColumns; i < _model->columnCount(); i++) {
+    if( month->weekNumber(_model->day(i)) == currentWeek ) {
+      view->showSection(i);
+    } else {
+      view->hideSection(i);
+    }
+  }
+}
+
+////// private ///////////////////////////////////////////////////////////////
+
+void WWorkHours::initHoursMenu()
+{
+  QAction *action = nullptr;
+
+  action = new QAction(tr("Resize columns"), ui->hoursView);
+  connect(action, &QAction::triggered,
+          this, &WWorkHours::resizeColumns);
+  ui->hoursView->addAction(action);
+
+  action = new QAction(tr("Show month"), ui->hoursView);
+  connect(action, &QAction::triggered,
+          this, &WWorkHours::showMonth);
+  ui->hoursView->addAction(action);
+
+  action = new QAction(tr("Show week"), ui->hoursView);
+  connect(action, &QAction::triggered,
+          this, &WWorkHours::showWeek);
+  ui->hoursView->addAction(action);
+
+  ui->hoursView->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
