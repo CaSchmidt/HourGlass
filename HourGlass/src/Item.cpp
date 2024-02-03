@@ -33,27 +33,24 @@
 
 ////// public ////////////////////////////////////////////////////////////////
 
-bool addItem(Items *list, Item item)
+Item::Item(const Project& project,
+           const QString& description) noexcept
+  : description(description)
+  , project(project)
 {
-  if( list == nullptr  ||  !item ) {
-    return false;
-  }
-
-  list->push_back(std::move(item));
-
-  return true;
+  hours.fill(0);
 }
 
-numhour_t sumDayHours(const Items& items, const std::size_t day)
+bool Item::isValid() const
 {
-  if( day >= MAX_WORKDAYS ) {
-    return 0;
-  }
+  return project.isValid();
+}
 
+numhour_t Item::sumHours() const
+{
   numhour_t result = 0;
-  for(const Item& item : items) {
-    result += item.hours[day];
+  for(std::size_t i = 0; i < hours.size(); i++) {
+    result += hours[i];
   }
-
   return result;
 }

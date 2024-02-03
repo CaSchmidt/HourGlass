@@ -55,6 +55,17 @@ int Month::id() const
       : 0;
 }
 
+bool Month::add(Item i)
+{
+  if( !i ) {
+    return false;
+  }
+
+  items.push_back(std::move(i));
+
+  return true;
+}
+
 int Month::days() const
 {
   return QDate(_year, _month, 1).daysInMonth();
@@ -80,6 +91,20 @@ bool Month::isWeekend(const int day) const
   const int weekDay = QDate(_year, _month, day).dayOfWeek();
 
   return weekDay == Qt::Saturday  ||  weekDay == Qt::Sunday;
+}
+
+numhour_t Month::sumDayHours(const std::size_t day) const
+{
+  if( day >= MAX_WORKDAYS ) {
+    return 0;
+  }
+
+  numhour_t result = 0;
+  for(const Item& item : items) {
+    result += item.hours[day];
+  }
+
+  return result;
 }
 
 QString Month::toString() const

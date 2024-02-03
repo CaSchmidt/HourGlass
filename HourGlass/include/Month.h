@@ -42,18 +42,21 @@ struct Month {
 
   bool isValid() const;
 
-  inline operator bool() const
+  inline explicit operator bool() const
   {
     return isValid();
   }
 
   int id() const;
 
+  bool add(Item i);
   int days() const;
   bool isCurrentDay(const int day) const;
   bool isMonday(const int day) const;
   bool isMonth(const QDate& date) const;
   bool isWeekend(const int day) const;
+  // day := [0,30]
+  numhour_t sumDayHours(const std::size_t day) const;
   QString toString() const;
   int weekNumber(const int day) const;
 

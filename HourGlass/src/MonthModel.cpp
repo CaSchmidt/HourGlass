@@ -61,7 +61,7 @@ void MonthModel::addItem(const projectid_t id)
   }
 
   beginInsertRows(QModelIndex(), rowCount() - 1, rowCount() - 1);
-  ::addItem(&_month->items, *p);
+  _month->add(*p);
   endInsertRows();
 }
 
@@ -164,7 +164,7 @@ QVariant MonthModel::data(const QModelIndex& index,
 
     } else if( isDayHoursRow(row) ) {
       if( isDayColumn(column) ) {
-        return toString(sumDayHours(_month->items, column - Num_ItemColumns));
+        return toString(_month->sumDayHours(column - Num_ItemColumns));
       }
 
     } // row

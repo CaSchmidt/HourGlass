@@ -36,40 +36,20 @@
 
 struct Item {
   Item(const Project& project = Project(),
-       const QString& description = QString()) noexcept
-    : description(description)
-    , project(project)
-  {
-    hours.fill(0);
-  }
+       const QString& description = QString()) noexcept;
 
-  bool isValid() const
-  {
-    return project.isValid();
-  }
+  bool isValid() const;
 
-  operator bool() const
+  inline explicit operator bool() const
   {
     return isValid();
   }
 
-  numhour_t sumHours() const
-  {
-    numhour_t result = 0;
-    for(std::size_t i = 0; i < hours.size(); i++) {
-      result += hours[i];
-    }
-    return result;
-  }
+  numhour_t sumHours() const;
 
   QString description;
   Project project;
-  Hours hours;
+  Hours   hours;
 };
 
 using Items = std::vector<Item>;
-
-bool addItem(Items *list, Item item);
-
-// day := [0,30]
-numhour_t sumDayHours(const Items& items, const std::size_t day);
