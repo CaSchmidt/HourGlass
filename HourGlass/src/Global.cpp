@@ -29,10 +29,43 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <algorithm>
+
 #include "Global.h"
 
-namespace Global {
+////// public ////////////////////////////////////////////////////////////////
 
-  Projects projects;
+Context::Context() noexcept
+  : months()
+  , projects()
+{
+}
 
-} // namespace Global
+bool Context::add(Project p)
+{
+  if( !p  ||  isProject(p.id()) ) {
+    return false;
+  }
+
+  projects.push_back(std::move(p));
+
+  return true;
+}
+
+Project *Context::findProject(const projectid_t id) const
+{
+  const auto hit = std::find(projects.cbegin(), projects.cend(), id);
+
+  return hit != projects.cend()
+      ? &const_cast<Project&>(*hit)
+      : nullptr;
+}
+
+bool Context::isProject(const projectid_t id) const
+{
+  return std::find(projects.cbegin(), projects.cend(), id) != projects.cend();
+}
+
+////// Public ////////////////////////////////////////////////////////////////
+
+Context global;

@@ -55,13 +55,13 @@ void MonthModel::addItem(const projectid_t id)
     return;
   }
 
-  const Project p = findProject(Global::projects, id);
-  if( !p ) {
+  const Project *p = global.findProject(id);
+  if( p == nullptr ) {
     return;
   }
 
   beginInsertRows(QModelIndex(), rowCount() - 1, rowCount() - 1);
-  ::addItem(&_month->items, p);
+  ::addItem(&_month->items, *p);
   endInsertRows();
 }
 
@@ -116,9 +116,9 @@ void MonthModel::updateProjects()
   }
 
   for(Item& item : _month->items) {
-    const Project p = findProject(Global::projects, item.project.id());
-    if( p ) {
-      item.project.name = p.name;
+    const Project *p = global.findProject(item.project.id());
+    if( p != nullptr ) {
+      item.project.name = p->name;
     }
   }
 

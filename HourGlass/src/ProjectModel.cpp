@@ -50,10 +50,8 @@ void ProjectModel::addProject(const QString& name)
     return;
   }
 
-  Projects *projects = &Global::projects;
-
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
-  ::addProject(projects, {static_cast<projectid_t>(projects->size()), name});
+  global.add({static_cast<projectid_t>(global.projects.size()), name});
   endInsertRows();
 
   emit projectsChanged();
@@ -62,7 +60,7 @@ void ProjectModel::addProject(const QString& name)
 void ProjectModel::clearProjects()
 {
   beginResetModel();
-  Global::projects.clear();
+  global.projects.clear();
   endResetModel();
 
   emit projectsChanged();
@@ -71,7 +69,7 @@ void ProjectModel::clearProjects()
 void ProjectModel::setProjects(Projects projects)
 {
   beginResetModel();
-  Global::projects = std::move(projects);
+  global.projects = std::move(projects);
   endResetModel();
 
   emit projectsChanged();
@@ -89,7 +87,7 @@ QVariant ProjectModel::data(const QModelIndex& index,
     return QVariant();
   }
 
-  const Projects& projects = Global::projects;
+  const Projects& projects = global.projects;
 
   if(        role == Qt::DisplayRole ) {
     const std::size_t row = index.row();
@@ -137,7 +135,7 @@ QVariant ProjectModel::headerData(int section, Qt::Orientation orientation,
 
 int ProjectModel::rowCount(const QModelIndex& /*index*/) const
 {
-  return int(Global::projects.size());
+  return int(global.projects.size());
 }
 
 bool ProjectModel::setData(const QModelIndex& index, const QVariant& value,
@@ -150,7 +148,7 @@ bool ProjectModel::setData(const QModelIndex& index, const QVariant& value,
   }
 
   const std::size_t row = index.row();
-  Global::projects[row].name = name;
+  global.projects[row].name = name;
 
   emit dataChanged(index, index);
   emit projectsChanged();

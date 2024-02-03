@@ -94,7 +94,7 @@ void WWorkHours::updateProjects()
   // Projects Combo //////////////////////////////////////////////////////////
 
   ui->projectCombo->clear();
-  for(const Project& p : Global::projects) {
+  for(const Project& p : global.projects) {
     ui->projectCombo->addItem(p.name, p.id());
   }
 

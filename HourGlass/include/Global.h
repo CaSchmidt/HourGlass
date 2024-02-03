@@ -33,12 +33,20 @@
 
 #include <type_traits>
 
+#include "Month.h"
 #include "Project.h"
 
 static_assert( std::is_unsigned_v<std::size_t> );
 
-namespace Global {
+struct Context {
+  Context() noexcept;
 
-  extern Projects projects;
+  bool add(Project p);
+  Project *findProject(const projectid_t id) const;
+  bool isProject(const projectid_t id) const;
 
-} // namespace Global
+  Months months;
+  Projects projects;
+};
+
+extern Context global;

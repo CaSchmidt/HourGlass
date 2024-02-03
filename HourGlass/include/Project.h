@@ -62,10 +62,3 @@ private:
 };
 
 using Projects = std::vector<Project>;
-
-bool addProject(Projects *list, Project project);
-
-Project findProject(const Projects& list, const projectid_t id,
-                    const Project& defValue = Project());
-
-bool isProject(const Projects& list, const projectid_t id);

@@ -55,31 +55,3 @@ bool Project::operator==(const projectid_t id) const
 {
   return _id == id;
 }
-
-////// Public ////////////////////////////////////////////////////////////////
-
-bool addProject(Projects *list, Project project)
-{
-  if( list == nullptr  ||  !project  ||  isProject(*list, project.id()) ) {
-    return false;
-  }
-
-  list->push_back(std::move(project));
-
-  return true;
-}
-
-Project findProject(const Projects& list, const projectid_t id,
-                    const Project& defValue)
-{
-  const auto hit = std::find(list.cbegin(), list.cend(), id);
-
-  return hit != list.cend()
-      ? *hit
-      : defValue;
-}
-
-bool isProject(const Projects& list, const projectid_t id)
-{
-  return std::find(list.cbegin(), list.cend(), id) != list.cend();
-}
