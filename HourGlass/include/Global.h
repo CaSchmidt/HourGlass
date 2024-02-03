@@ -41,6 +41,10 @@ static_assert( std::is_unsigned_v<std::size_t> );
 struct Context {
   Context() noexcept;
 
+  bool add(Month m);
+  Month *findMonth(const int id) const;
+  bool isMonth(const int id) const;
+
   bool add(Project p);
   Project *findProject(const projectid_t id) const;
   bool isProject(const projectid_t id) const;

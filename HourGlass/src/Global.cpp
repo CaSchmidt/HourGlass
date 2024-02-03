@@ -41,6 +41,31 @@ Context::Context() noexcept
 {
 }
 
+bool Context::add(Month m)
+{
+  if( !m  ||  isMonth(m.id()) ) {
+    return false;
+  }
+
+  months.push_back(std::move(m));
+
+  return true;
+}
+
+Month *Context::findMonth(const int id) const
+{
+  const auto hit = std::find(months.cbegin(), months.cend(), id);
+
+  return hit != months.cend()
+      ? &const_cast<Month&>(*hit)
+      : nullptr;
+}
+
+bool Context::isMonth(const int id) const
+{
+  return std::find(months.cbegin(), months.cend(), id) != months.cend();
+}
+
 bool Context::add(Project p)
 {
   if( !p  ||  isProject(p.id()) ) {

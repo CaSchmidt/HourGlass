@@ -108,30 +108,3 @@ bool Month::operator==(const int id) const
 {
   return isValid()  &&  this->id() == id;
 }
-
-////// Public ////////////////////////////////////////////////////////////////
-
-bool addMonth(Months *list, Month month)
-{
-  if( list == nullptr  ||  !month  ||  isMonth(*list, month.id()) ) {
-    return false;
-  }
-
-  list->push_back(std::move(month));
-
-  return true;
-}
-
-Month *findMonth(const Months& list, const int id)
-{
-  const auto hit = std::find(list.cbegin(), list.cend(), id);
-
-  return hit != list.cend()
-      ? &const_cast<Month&>(*hit)
-      : nullptr;
-}
-
-bool isMonth(const Months& list, const int id)
-{
-  return std::find(list.cbegin(), list.cend(), id) != list.cend();
-}

@@ -69,9 +69,3 @@ private:
 };
 
 using Months = std::vector<Month>;
-
-bool addMonth(Months *list, Month month);
-
-Month *findMonth(const Months& list, const int id);
-
-bool isMonth(const Months& list, const int id);
