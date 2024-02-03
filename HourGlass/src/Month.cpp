@@ -45,12 +45,14 @@ Month::Month(const int year, const int month) noexcept
 
 bool Month::isValid() const
 {
-  return _year >= 2000  &&  1 <= _month  &&  _month <= 12;
+  return QDate::isValid(_year, _month, 1);
 }
 
 int Month::id() const
 {
-  return _year*100 + _month;
+  return isValid()
+      ? _year*100 + _month
+      : 0;
 }
 
 int Month::days() const
@@ -89,28 +91,17 @@ int Month::weekNumber(const int day) const
 
 bool Month::operator<(const Month& other) const
 {
-  if( isValid()  &&  other ) {
-    if(        _year <  other._year ) {
-      return true;
-    } else if( _year == other._year  &&  _month < other._month ) {
-      return true;
-    }
-  }
-
-  return false;
+  return isValid()  &&  other  &&  id() < other.id();
 }
 
 bool Month::operator==(const Month& other) const
 {
-  return
-      isValid()  &&  other   &&
-      _year  == other._year  &&
-      _month == other._month;
+  return isValid()  &&  other  &&  id() == other.id();
 }
 
 bool Month::operator==(const int id) const
 {
-  return this->id() == id;
+  return isValid()  &&  this->id() == id;
 }
 
 ////// Public ////////////////////////////////////////////////////////////////
@@ -131,7 +122,7 @@ Month *findMonth(const Months& list, const int id)
   const auto hit = std::find(list.cbegin(), list.cend(), id);
 
   return hit != list.cend()
-      ? const_cast<Month*>(&(*hit))
+      ? &const_cast<Month&>(*hit)
       : nullptr;
 }
 

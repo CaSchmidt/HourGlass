@@ -72,10 +72,24 @@ void MonthModel::clear()
   endResetModel();
 }
 
+int MonthModel::day(const int column) const
+{
+  return isValid()  &&  isDayColumn(column)
+      ? column - Num_ItemColumns + 1
+      : 0;
+}
+
 bool MonthModel::isCurrentMonth() const
 {
   return isValid()
       ? _month->isMonth(QDate::currentDate())
+      : false;
+}
+
+bool MonthModel::isDayColumn(const int column) const
+{
+  return isValid()
+      ? Num_ItemColumns <= column  &&  column < Num_ItemColumns + _month->days()
       : false;
 }
 
@@ -218,7 +232,7 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
         const int day = MonthModel::day(section);
         if( _month->isMonday(day) ) {
           return QStringLiteral("[%1] %2")
-              .arg(_month->weekNumber(day))
+              .arg(_month->weekNumber(day), 2, 10, QLatin1Char('0'))
               .arg(day);
         } else {
           return day;
@@ -284,16 +298,6 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
 }
 
 ////// private ///////////////////////////////////////////////////////////////
-
-int MonthModel::day(const int column)
-{
-  return column - Num_ItemColumns + 1;
-}
-
-bool MonthModel::isDayColumn(const int column) const
-{
-  return Num_ItemColumns <= column  &&  column < Num_ItemColumns + _month->days();
-}
 
 bool MonthModel::isDayHoursRow(const std::size_t row) const
 {

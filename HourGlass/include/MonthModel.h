@@ -52,7 +52,9 @@ public:
 
   void addItem(const projectid_t id);
   void clear();
+  int day(const int column) const;
   bool isCurrentMonth() const;
+  bool isDayColumn(const int column) const;
   bool isValid() const;
   void setMonth(Month *month);
   void updateProjects();
@@ -68,8 +70,6 @@ public:
                int role);
 
 private:
-  static int day(const int column);
-  bool isDayColumn(const int column) const;
   bool isDayHoursRow(const std::size_t row) const;
   bool isItemRow(const std::size_t row) const;
   static double toDouble(const QString& hours);
