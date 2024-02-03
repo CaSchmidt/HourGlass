@@ -33,6 +33,8 @@
 
 #include "Project.h"
 
+#include "XML_tags.h"
+
 ////// public ////////////////////////////////////////////////////////////////
 
 Project::Project(const projectid_t id, const QString& name) noexcept
@@ -56,7 +58,22 @@ bool Project::operator==(const projectid_t id) const
   return _id == id;
 }
 
-////// File I/O //////////////////////////////////////////////////////////////
+////// XML I/O ///////////////////////////////////////////////////////////////
+
+void output(QDomDocument *doc, QDomElement *xml_projects, const Project& project)
+{
+  if( doc == nullptr  ||  xml_projects == nullptr ) {
+    return;
+  }
+
+  QDomElement xml_project = doc->createElement(XML_project);
+  xml_project.setAttribute(XML_pid, project.id());
+
+  QDomText xml_name = doc->createTextNode(project.name);
+  xml_project.appendChild(xml_name);
+
+  xml_projects->appendChild(xml_project);
+}
 
 void output(QDomDocument *doc, QDomElement *xml_root, const Projects& projects)
 {
@@ -64,16 +81,10 @@ void output(QDomDocument *doc, QDomElement *xml_root, const Projects& projects)
     return;
   }
 
-  QDomElement xml_projects = doc->createElement(QStringLiteral("projects"));
+  QDomElement xml_projects = doc->createElement(XML_projects);
   xml_root->appendChild(xml_projects);
 
   for(const Project& project : projects) {
-    QDomElement xml_project = doc->createElement(QStringLiteral("project"));
-    xml_project.setAttribute(QStringLiteral("pid"), project.id());
-
-    QDomText xml_name = doc->createTextNode(project.name);
-    xml_project.appendChild(xml_name);
-
-    xml_projects.appendChild(xml_project);
+    output(doc, &xml_projects, project);
   }
 }

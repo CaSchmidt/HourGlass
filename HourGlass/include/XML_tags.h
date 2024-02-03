@@ -31,27 +31,9 @@
 
 #pragma once
 
-#include <QtWidgets/QMainWindow>
-
-namespace Ui {
-  class WMainWindow;
-} // namespace Ui
-
-class WMainWindow : public QMainWindow {
-  Q_OBJECT
-public:
-  WMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
-  ~WMainWindow();
-
-private slots:
-  void open();
-  void save();
-  void saveAs();
-
-private:
-  QString getFilename(const bool is_save = false);
-
-  Ui::WMainWindow *ui{nullptr};
-
-  QString _lastfilename;
-};
+#define XML_HourGlass  QStringLiteral("HourGlass")
+#define XML_pid        QStringLiteral("pid")
+#define XML_projects   QStringLiteral("projects")
+#define XML_project    QStringLiteral("project")
+#define XML_pidata     QStringLiteral("version=\"1.0\" encoding=\"UTF-8\"")
+#define XML_pitarget   QStringLiteral("xml")

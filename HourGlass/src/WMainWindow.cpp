@@ -40,6 +40,7 @@
 
 #include "Global.h"
 #include "ProjectModel.h"
+#include "XML_tags.h"
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -85,62 +86,79 @@ WMainWindow::~WMainWindow()
 
 void WMainWindow::open()
 {
+  // (1) Get filename ////////////////////////////////////////////////////////
+
+  const QString filename = getFilename();
+  if( filename.isEmpty() ) {
+    return;
+  }
 }
 
 void WMainWindow::save()
 {
+  // (1) Get filename ////////////////////////////////////////////////////////
+
+  _lastfilename = _lastfilename.isEmpty()
+      ? getFilename(true)
+      : _lastfilename;
   if( _lastfilename.isEmpty() ) {
-    getSaveFilename();
-    if( _lastfilename.isEmpty() ) { // No filename chosen!
-      return;
-    }
+    return;
   }
+
+  // (2) Open file for writing ///////////////////////////////////////////////
+
+  QFile file(_lastfilename);
+  if( !file.open(QFile::WriteOnly) ) {
+    _lastfilename.clear();
+    return;
+  }
+
+  // (3) Create XML //////////////////////////////////////////////////////////
 
   QDomDocument doc;
 
-  QDomProcessingInstruction pi = doc.createProcessingInstruction(QStringLiteral("xml"),
-                                                                 QStringLiteral("version=\"1.0\" encoding=\"UTF-8\""));
+  QDomProcessingInstruction pi = doc.createProcessingInstruction(XML_pitarget, XML_pidata);
   doc.appendChild(pi);
 
-  QDomElement xml_root = doc.createElement(QStringLiteral("HourGlass"));
+  QDomElement xml_root = doc.createElement(XML_HourGlass);
   doc.appendChild(xml_root);
 
   output(&doc, &xml_root, global.projects);
 
-  QFile file(_lastfilename);
-  if( !file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text) ) {
-    _lastfilename.clear();
-    return;
-  }
+  // (4) Serialize XML ///////////////////////////////////////////////////////
 
   QTextStream stream(&file);
   stream.setCodec("UTF-8");
   stream << doc.toString(2);
   stream.flush();
 
+  // Done! ///////////////////////////////////////////////////////////////////
+
   file.close();
 }
 
 void WMainWindow::saveAs()
 {
-  getSaveFilename();
-  save();
+  const QString filename = getFilename(true);
+  if( !filename.isEmpty() ) {
+    _lastfilename = filename;
+    save();
+  }
 }
 
 ////// private ///////////////////////////////////////////////////////////////
 
-void WMainWindow::getSaveFilename()
+QString WMainWindow::getFilename(const bool is_save)
 {
   const QString dir = !_lastfilename.isEmpty()
       ? QFileInfo(_lastfilename).canonicalPath()
       : QString();
 
-  const QString filename =
-      QFileDialog::getSaveFileName(this, QStringLiteral("Save as"),
-                                   dir, QStringLiteral("HourGlass files (*.xml)"));
-  if( filename.isEmpty() ) {
-    return;
-  }
+  const QString filename = is_save
+      ? QFileDialog::getSaveFileName(this, tr("Save as"),
+                                     dir, tr("HourGlass files (*.xml)"))
+      : QFileDialog::getOpenFileName(this, tr("Open"),
+                                     dir, tr("HourGlass files (*.xml)"));
 
-  _lastfilename = filename;
+  return filename;
 }
