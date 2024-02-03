@@ -50,4 +50,6 @@ private slots:
 
 private:
   Ui::WMainWindow *ui{nullptr};
+
+  QString _lastfilename;
 };

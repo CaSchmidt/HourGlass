@@ -29,6 +29,8 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <QtXml/QDomDocument>
+
 #include "Project.h"
 
 ////// public ////////////////////////////////////////////////////////////////
@@ -52,4 +54,26 @@ projectid_t Project::id() const
 bool Project::operator==(const projectid_t id) const
 {
   return _id == id;
+}
+
+////// File I/O //////////////////////////////////////////////////////////////
+
+void output(QDomDocument *doc, QDomElement *xml_root, const Projects& projects)
+{
+  if( doc == nullptr  ||  xml_root == nullptr ) {
+    return;
+  }
+
+  QDomElement xml_projects = doc->createElement(QStringLiteral("projects"));
+  xml_root->appendChild(xml_projects);
+
+  for(const Project& project : projects) {
+    QDomElement xml_project = doc->createElement(QStringLiteral("project"));
+    xml_project.setAttribute(QStringLiteral("pid"), project.id());
+
+    QDomText xml_name = doc->createTextNode(project.name);
+    xml_project.appendChild(xml_name);
+
+    xml_projects.appendChild(xml_project);
+  }
 }

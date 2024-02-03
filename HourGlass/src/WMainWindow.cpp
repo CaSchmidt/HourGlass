@@ -29,6 +29,12 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QFileDialog>
+#include <QtXml/QDomDocument>
+
 #include "WMainWindow.h"
 #include "ui_WMainWindow.h"
 
@@ -83,8 +89,52 @@ void WMainWindow::open()
 
 void WMainWindow::save()
 {
+  if( _lastfilename.isEmpty() ) {
+    saveAs();
+    if( _lastfilename.isEmpty() ) { // No filename chosen!
+      return;
+    }
+  }
+
+  QDomDocument doc;
+
+  QDomProcessingInstruction pi = doc.createProcessingInstruction(QStringLiteral("xml"),
+                                                                 QStringLiteral("version=\"1.0\" encoding=\"UTF-8\""));
+  doc.appendChild(pi);
+
+  QDomElement xml_root = doc.createElement(QStringLiteral("HourGlass"));
+  doc.appendChild(xml_root);
+
+  output(&doc, &xml_root, global.projects);
+
+  QFile file(_lastfilename);
+  if( !file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text) ) {
+    _lastfilename.clear();
+    return;
+  }
+
+  QTextStream stream(&file);
+  stream.setCodec("UTF-8");
+  stream << doc.toString(2);
+  stream.flush();
+
+  file.close();
 }
 
 void WMainWindow::saveAs()
 {
+  const QString dir = !_lastfilename.isEmpty()
+      ? QFileInfo(_lastfilename).canonicalPath()
+      : QString();
+
+  const QString filename =
+      QFileDialog::getSaveFileName(this, QStringLiteral("Save as"),
+                                   dir, QStringLiteral("HourGlass files (*.xml)"));
+  if( filename.isEmpty() ) {
+    return;
+  }
+
+  _lastfilename = filename;
+
+  save();
 }
