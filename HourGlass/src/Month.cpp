@@ -29,8 +29,6 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <algorithm>
-
 #include <QtCore/QDate>
 
 #include "Month.h"
@@ -51,7 +49,7 @@ bool Month::isValid() const
 int Month::id() const
 {
   return isValid()
-      ? _year*100 + _month
+      ? make_monthid(_year, _month)
       : 0;
 }
 
@@ -132,4 +130,16 @@ bool Month::operator==(const Month& other) const
 bool Month::operator==(const int id) const
 {
   return isValid()  &&  this->id() == id;
+}
+
+////// Public ////////////////////////////////////////////////////////////////
+
+int make_monthid(const int year, const int month)
+{
+  return year*100 + month;
+}
+
+std::pair<int,int> split_monthid(const int id)
+{
+  return std::pair<int,int>(id/100, id%100);
 }

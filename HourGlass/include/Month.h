@@ -31,6 +31,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include <QtCore/QString>
 
 #include "Item.h"
@@ -72,3 +74,7 @@ private:
 };
 
 using Months = std::vector<Month>;
+
+int make_monthid(const int year, const int month);
+
+std::pair<int,int> split_monthid(const int id);
