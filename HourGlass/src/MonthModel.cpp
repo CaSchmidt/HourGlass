@@ -234,6 +234,9 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
           return QStringLiteral("[%1] %2")
               .arg(_month->weekNumber(day), 2, 10, QLatin1Char('0'))
               .arg(day);
+        } else if( _month->isCurrentDay(day) ) {
+          return QStringLiteral(">%1<")
+              .arg(day);
         } else {
           return day;
         }
