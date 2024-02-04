@@ -51,10 +51,6 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
 {
   ui->setupUi(this);
 
-  // TODO ////////////////////////////////////////////////////////////////////
-
-  ui->hoursWidget->setMonth_TODO();
-
   // Actions /////////////////////////////////////////////////////////////////
 
   ui->openAction->setShortcut(Qt::CTRL + Qt::Key_O);

@@ -60,12 +60,15 @@ WWorkHours::WWorkHours(QWidget* parent, Qt::WindowFlags f)
 
   // Signals & Slots /////////////////////////////////////////////////////////
 
+  connect(ui->monthCombo, qOverload<int>(&QComboBox::currentIndexChanged),
+          this, &WWorkHours::setMonth);
+  connect(_model, &MonthModel::monthChanged,
+          this, &WWorkHours::updateMonth);
+
   connect(ui->addItemButton, &QPushButton::clicked,
           this, &WWorkHours::addItem);
-
-  // TODO ////////////////////////////////////////////////////////////////////
-
-  _month = Month(2024, 2);
+  connect(ui->addMonthButton, &QPushButton::clicked,
+          this, &WWorkHours::addMonth);
 }
 
 WWorkHours::~WWorkHours()
@@ -83,16 +86,12 @@ void WWorkHours::clear()
 void WWorkHours::initializeUi(Months months)
 {
   global.months = std::move(months);
+  initMonthsCombo();
 }
 
 MonthModel *WWorkHours::model() const
 {
   return _model;
-}
-
-void WWorkHours::setMonth_TODO()
-{
-  _model->setMonth(&_month);
 }
 
 ////// public slots //////////////////////////////////////////////////////////
@@ -119,6 +118,16 @@ void WWorkHours::addItem()
   _model->addItem(id);
 }
 
+void WWorkHours::addMonth()
+{
+  Month m = Month(ui->dateEdit->date());
+  if( !global.add(std::move(m)) ) {
+    return;
+  }
+  global.sortMonths();
+  initMonthsCombo();
+}
+
 void WWorkHours::resizeColumns()
 {
   QHeaderView *view = ui->hoursView->horizontalHeader();
@@ -126,6 +135,14 @@ void WWorkHours::resizeColumns()
     return;
   }
   view->resizeSections(QHeaderView::ResizeToContents);
+}
+
+void WWorkHours::setMonth(int index)
+{
+  showMonth();
+
+  const int mid = ui->monthCombo->itemData(index).toInt();
+  _model->setMonth(global.findMonth(mid));
 }
 
 void WWorkHours::showMonth()
@@ -159,6 +176,16 @@ void WWorkHours::showWeek()
   }
 }
 
+void WWorkHours::updateMonth(const QString& s)
+{
+  if( !s.isEmpty() ) {
+    ui->hoursGroup->setTitle(tr("[ %1 ]")
+                             .arg(s));
+  } else {
+    ui->hoursGroup->setTitle(tr("Hours"));
+  }
+}
+
 ////// private ///////////////////////////////////////////////////////////////
 
 void WWorkHours::initHoursMenu()
@@ -181,4 +208,12 @@ void WWorkHours::initHoursMenu()
   ui->hoursView->addAction(action);
 
   ui->hoursView->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+void WWorkHours::initMonthsCombo()
+{
+  ui->monthCombo->clear();
+  for(const Month& m : global.months) {
+    ui->monthCombo->addItem(m.toString(), m.id());
+  }
 }

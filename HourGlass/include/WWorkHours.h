@@ -52,21 +52,22 @@ public:
 
   MonthModel *model() const;
 
-  void setMonth_TODO();
-
 public slots:
   void updateProjects();
 
 private slots:
   void addItem();
+  void addMonth();
   void resizeColumns();
+  void setMonth(int index);
   void showMonth();
   void showWeek();
+  void updateMonth(const QString& s);
 
 private:
   void initHoursMenu();
+  void initMonthsCombo();
 
   MonthModel *_model{nullptr};
   Ui::WWorkHours *ui{nullptr};
-  Month _month; // TODO
 };
