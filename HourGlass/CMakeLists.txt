@@ -33,6 +33,7 @@ list(APPEND HourGlass_HEADERS
   include/WMainWindow.h
   include/WProjects.h
   include/WWorkHours.h
+  include/XML_io.h
   include/XML_tags.h
 )
 
@@ -47,6 +48,7 @@ list(APPEND HourGlass_SOURCES
   src/WMainWindow.cpp
   src/WProjects.cpp
   src/WWorkHours.cpp
+  src/XML_io.cpp
 )
 
 ### Target ###################################################################
