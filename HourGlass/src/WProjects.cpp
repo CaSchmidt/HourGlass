@@ -63,6 +63,16 @@ WProjects::~WProjects()
   delete ui;
 }
 
+void WProjects::clear()
+{
+  _model->clearProjects();
+}
+
+void WProjects::initializeUi(Projects projects)
+{
+  _model->setProjects(std::move(projects));
+}
+
 ProjectModel *WProjects::model() const
 {
   return _model;

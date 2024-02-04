@@ -29,11 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <QtXml/QDomDocument>
-
 #include "Project.h"
-
-#include "XML_tags.h"
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -56,35 +52,4 @@ projectid_t Project::id() const
 bool Project::operator==(const projectid_t id) const
 {
   return _id == id;
-}
-
-////// XML I/O ///////////////////////////////////////////////////////////////
-
-void output(QDomDocument *doc, QDomElement *xml_projects, const Project& project)
-{
-  if( doc == nullptr  ||  xml_projects == nullptr ) {
-    return;
-  }
-
-  QDomElement xml_project = doc->createElement(XML_project);
-  xml_project.setAttribute(XML_pid, project.id());
-
-  QDomText xml_name = doc->createTextNode(project.name);
-  xml_project.appendChild(xml_name);
-
-  xml_projects->appendChild(xml_project);
-}
-
-void output(QDomDocument *doc, QDomElement *xml_root, const Projects& projects)
-{
-  if( doc == nullptr  ||  xml_root == nullptr ) {
-    return;
-  }
-
-  QDomElement xml_projects = doc->createElement(XML_projects);
-  xml_root->appendChild(xml_projects);
-
-  for(const Project& project : projects) {
-    output(doc, &xml_projects, project);
-  }
 }

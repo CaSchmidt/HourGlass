@@ -59,11 +59,7 @@ void ProjectModel::addProject(const QString& name)
 
 void ProjectModel::clearProjects()
 {
-  beginResetModel();
-  global.projects.clear();
-  endResetModel();
-
-  emit projectsChanged();
+  setProjects(Projects());
 }
 
 void ProjectModel::setProjects(Projects projects)

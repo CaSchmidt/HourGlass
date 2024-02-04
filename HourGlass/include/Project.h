@@ -62,10 +62,3 @@ private:
 };
 
 using Projects = std::vector<Project>;
-
-////// XML I/O ///////////////////////////////////////////////////////////////
-
-class QDomDocument;
-class QDomElement;
-
-void output(QDomDocument *doc, QDomElement *xml_root, const Projects& projects);

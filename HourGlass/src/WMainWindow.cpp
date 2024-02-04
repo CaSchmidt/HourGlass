@@ -33,6 +33,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QTextStream>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 #include <QtXml/QDomDocument>
 
 #include "WMainWindow.h"
@@ -40,7 +41,7 @@
 
 #include "Global.h"
 #include "ProjectModel.h"
-#include "XML_tags.h"
+#include "XML_io.h"
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -82,7 +83,7 @@ WMainWindow::~WMainWindow()
   delete ui;
 }
 
-////// private ///////////////////////////////////////////////////////////////
+////// private slots /////////////////////////////////////////////////////////
 
 void WMainWindow::open()
 {
@@ -92,6 +93,48 @@ void WMainWindow::open()
   if( filename.isEmpty() ) {
     return;
   }
+
+  _lastfilename = filename;
+  const QString fileInfo = QFileInfo(_lastfilename).fileName();
+
+  // (2) Open file for reading ///////////////////////////////////////////////
+
+  QFile file(_lastfilename);
+  if( !file.open(QFile::ReadOnly) ) {
+    QMessageBox::critical(this, tr("Error"),
+                          tr("Unable to open file \"%1\"!")
+                          .arg(fileInfo));
+    _lastfilename.clear();
+    return;
+  }
+
+  // (3) Deserialize XML /////////////////////////////////////////////////////
+
+  QTextStream stream(&file);
+  stream.setCodec("UTF-8");
+  const QString xmlContent = stream.readAll();
+  file.close();
+
+  // (4) Parse XML ///////////////////////////////////////////////////////////
+
+  Context context;
+  if( !xmlRead(&context, xmlContent, this) ) {
+    QMessageBox::critical(this, tr("Error"),
+                          tr("Unable to read XML file \"%1\"!")
+                          .arg(fileInfo));
+    _lastfilename.clear();
+    return;
+  }
+
+  // (5) Update UI ///////////////////////////////////////////////////////////
+
+  ui->hoursWidget->clear();
+  ui->projectsWidget->clear();
+
+  ui->projectsWidget->initializeUi(std::move(context.projects));
+  ui->hoursWidget->initializeUi(std::move(context.months));
+
+  // Done! ///////////////////////////////////////////////////////////////////
 }
 
 void WMainWindow::save()
@@ -109,27 +152,22 @@ void WMainWindow::save()
 
   QFile file(_lastfilename);
   if( !file.open(QFile::WriteOnly) ) {
+    QMessageBox::critical(this, tr("Error"),
+                          tr("Unable to save file \"%1\"!")
+                          .arg(QFileInfo(_lastfilename).fileName()));
     _lastfilename.clear();
     return;
   }
 
   // (3) Create XML //////////////////////////////////////////////////////////
 
-  QDomDocument doc;
-
-  QDomProcessingInstruction pi = doc.createProcessingInstruction(XML_pitarget, XML_pidata);
-  doc.appendChild(pi);
-
-  QDomElement xml_root = doc.createElement(XML_HourGlass);
-  doc.appendChild(xml_root);
-
-  output(&doc, &xml_root, global.projects);
+  const QString xmlContent = xmlWrite(global, this);
 
   // (4) Serialize XML ///////////////////////////////////////////////////////
 
   QTextStream stream(&file);
   stream.setCodec("UTF-8");
-  stream << doc.toString(2);
+  stream << xmlContent;
   stream.flush();
 
   // Done! ///////////////////////////////////////////////////////////////////

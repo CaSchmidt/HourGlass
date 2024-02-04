@@ -65,11 +65,9 @@ void MonthModel::addItem(const projectid_t id)
   endInsertRows();
 }
 
-void MonthModel::clear()
+void MonthModel::clearMonth()
 {
-  beginResetModel();
-  _month = nullptr;
-  endResetModel();
+  setMonth(nullptr);
 }
 
 int MonthModel::day(const int column) const
@@ -105,7 +103,7 @@ Month *MonthModel::month() const
 
 void MonthModel::setMonth(Month *month)
 {
-  if( month == nullptr  ||  !month->isValid() ) {
+  if( month != nullptr  &&  !month->isValid() ) {
     return;
   }
 
@@ -203,6 +201,10 @@ QVariant MonthModel::data(const QModelIndex& index,
 Qt::ItemFlags MonthModel::flags(const QModelIndex& index) const
 {
   Qt::ItemFlags flags = QAbstractTableModel::flags(index);
+
+  if( !isValid()  ||  !index.isValid() ) {
+    return flags;
+  }
 
   const int      column = index.column();
   const std::size_t row = index.row();

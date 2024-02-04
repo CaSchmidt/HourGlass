@@ -33,6 +33,8 @@
 
 #include <QtWidgets/QWidget>
 
+#include "Project.h"
+
 namespace Ui {
   class WProjects;
 } // namespace Ui
@@ -44,6 +46,9 @@ class WProjects : public QWidget {
 public:
   WProjects(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
   ~WProjects();
+
+  void clear();
+  void initializeUi(Projects projects);
 
   ProjectModel *model() const;
 

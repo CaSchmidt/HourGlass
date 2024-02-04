@@ -73,6 +73,23 @@ WWorkHours::~WWorkHours()
   delete ui;
 }
 
+void WWorkHours::clear()
+{
+  ui->monthCombo->clear();
+  ui->projectCombo->clear();
+  _model->clearMonth();
+}
+
+void WWorkHours::initializeUi(Months months)
+{
+  global.months = std::move(months);
+}
+
+MonthModel *WWorkHours::model() const
+{
+  return _model;
+}
+
 void WWorkHours::setMonth_TODO()
 {
   _model->setMonth(&_month);

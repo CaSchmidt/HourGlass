@@ -33,7 +33,7 @@
 
 #include <QtWidgets/QWidget>
 
-#include "Month.h" // TODO
+#include "Month.h"
 
 namespace Ui {
   class WWorkHours;
@@ -46,6 +46,11 @@ class WWorkHours : public QWidget {
 public:
   WWorkHours(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
   ~WWorkHours();
+
+  void clear();
+  void initializeUi(Months months);
+
+  MonthModel *model() const;
 
   void setMonth_TODO();
 

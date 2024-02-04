@@ -51,7 +51,7 @@ public:
   ~MonthModel();
 
   void addItem(const projectid_t id);
-  void clear();
+  void clearMonth();
   int day(const int column) const;
   bool isCurrentMonth() const;
   bool isDayColumn(const int column) const;
