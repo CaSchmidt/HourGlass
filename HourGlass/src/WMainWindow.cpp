@@ -122,6 +122,14 @@ void WMainWindow::open()
     return;
   }
 
+  if( !context ) {
+    QMessageBox::critical(this, tr("Error"),
+                          tr("Invalid context! (\"%1\")")
+                          .arg(fileInfo));
+    _lastfilename.clear();
+    return;
+  }
+
   // (5) Update UI ///////////////////////////////////////////////////////////
 
   ui->hoursWidget->clear();

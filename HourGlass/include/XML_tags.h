@@ -32,6 +32,9 @@
 #pragma once
 
 #define XML_HourGlass  QStringLiteral("HourGlass")
+#define XML_mid        QStringLiteral("mid")
+#define XML_month      QStringLiteral("month")
+#define XML_months     QStringLiteral("months")
 #define XML_pid        QStringLiteral("pid")
 #define XML_projects   QStringLiteral("projects")
 #define XML_project    QStringLiteral("project")
