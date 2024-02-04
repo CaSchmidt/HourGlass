@@ -124,7 +124,6 @@ void WWorkHours::addMonth()
   if( !global.add(std::move(m)) ) {
     return;
   }
-  global.sortMonths();
   initMonthsCombo();
 }
 
@@ -212,6 +211,8 @@ void WWorkHours::initHoursMenu()
 
 void WWorkHours::initMonthsCombo()
 {
+  global.sortMonths();
+
   ui->monthCombo->clear();
   for(const Month& m : global.months) {
     ui->monthCombo->addItem(m.toString(), m.id());
