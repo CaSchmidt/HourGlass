@@ -57,14 +57,14 @@
       <number>4</number>
      </property>
      <item>
+      <widget class="QLineEdit" name="nameEdit"/>
+     </item>
+     <item>
       <widget class="QPushButton" name="addButton">
        <property name="text">
         <string>Add</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="nameEdit"/>
      </item>
     </layout>
    </item>
@@ -72,8 +72,8 @@
  </widget>
  <tabstops>
   <tabstop>tableView</tabstop>
-  <tabstop>addButton</tabstop>
   <tabstop>nameEdit</tabstop>
+  <tabstop>addButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

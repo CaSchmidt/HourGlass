@@ -20,9 +20,6 @@
    <property name="topMargin">
     <number>0</number>
    </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
    <property name="bottomMargin">
     <number>0</number>
    </property>
@@ -95,7 +92,7 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QGroupBox" name="hoursGroup">
      <property name="title">
       <string>Hours</string>
      </property>
@@ -156,14 +153,14 @@
        <number>4</number>
       </property>
       <item>
+       <widget class="QComboBox" name="projectCombo"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="addItemButton">
         <property name="text">
          <string>Add</string>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="projectCombo"/>
       </item>
      </layout>
     </widget>
@@ -175,8 +172,8 @@
   <tabstop>dateEdit</tabstop>
   <tabstop>addMonthButton</tabstop>
   <tabstop>hoursView</tabstop>
-  <tabstop>addItemButton</tabstop>
   <tabstop>projectCombo</tabstop>
+  <tabstop>addItemButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
