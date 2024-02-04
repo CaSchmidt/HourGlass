@@ -30,6 +30,7 @@
 *****************************************************************************/
 
 #include <QtCore/QDate>
+#include <QtCore/QLocale>
 
 #include "Month.h"
 
@@ -39,6 +40,14 @@ Month::Month(const int year, const int month) noexcept
   : _month{month}
   , _year{year}
 {
+}
+
+Month::Month(const QDate& date) noexcept
+{
+  if( date.isValid() ) {
+    _year = date.year();
+    _month = date.month();
+  }
 }
 
 bool Month::isValid() const
@@ -103,6 +112,12 @@ numhour_t Month::sumDayHours(const std::size_t day) const
   }
 
   return result;
+}
+
+QString Month::toLocaleString() const
+{
+  const QDate date(_year, _month, 1);
+  return QLocale().toString(date, QStringLiteral("MMMM yyyy"));
 }
 
 QString Month::toString() const

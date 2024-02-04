@@ -41,6 +41,7 @@ class QDate;
 
 struct Month {
   Month(const int year = 0, const int month = 0) noexcept;
+  Month(const QDate& date) noexcept;
 
   bool isValid() const;
 
@@ -59,6 +60,7 @@ struct Month {
   bool isWeekend(const int day) const;
   // day := [0,30]
   numhour_t sumDayHours(const std::size_t day) const;
+  QString toLocaleString() const;
   QString toString() const;
   int weekNumber(const int day) const;
 

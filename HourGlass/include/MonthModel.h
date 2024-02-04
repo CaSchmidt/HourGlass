@@ -77,4 +77,7 @@ private:
   static QString toString(const double hours, const bool no_zero = false);
 
   Month *_month{nullptr};
+
+signals:
+  void monthChanged(const QString&);
 };

@@ -110,6 +110,12 @@ void MonthModel::setMonth(Month *month)
   beginResetModel();
   _month = month;
   endResetModel();
+
+  if( month != nullptr ) {
+    emit monthChanged(_month->toLocaleString());
+  } else {
+    emit monthChanged(QString());
+  }
 }
 
 void MonthModel::updateProjects()
