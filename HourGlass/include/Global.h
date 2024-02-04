@@ -41,6 +41,15 @@ static_assert( std::is_unsigned_v<std::size_t> );
 struct Context {
   Context() noexcept;
 
+  bool isValid() const;
+
+  inline explicit operator bool() const
+  {
+    return isValid();
+  }
+
+  void clear();
+
   bool add(Month m);
   Month *findMonth(const int id) const;
   bool isMonth(const int id) const;

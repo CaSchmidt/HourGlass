@@ -41,6 +41,25 @@ Context::Context() noexcept
 {
 }
 
+bool Context::isValid() const
+{
+  for(const Month& month : months) {
+    for(const Item& item : month.items) {
+      if( !isProject(item.project.id()) ) {
+        return false;
+      }
+    } // For each Item
+  } // For each Month
+
+  return true;
+}
+
+void Context::clear()
+{
+  months.clear();
+  projects.clear();
+}
+
 bool Context::add(Month m)
 {
   if( !m  ||  isMonth(m.id()) ) {
