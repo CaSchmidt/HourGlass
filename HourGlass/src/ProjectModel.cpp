@@ -51,7 +51,7 @@ void ProjectModel::addProject(const QString& name)
   }
 
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
-  global.add({static_cast<projectid_t>(global.projects.size()), name});
+  global.add(global.newProject(name));
   endInsertRows();
 
   emit projectsChanged();

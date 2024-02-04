@@ -122,6 +122,11 @@ bool Month::operator<(const Month& other) const
   return isValid()  &&  other  &&  id() < other.id();
 }
 
+bool Month::operator>(const Month& other) const
+{
+  return isValid()  &&  other  &&  id() > other.id();
+}
+
 bool Month::operator==(const Month& other) const
 {
   return isValid()  &&  other  &&  id() == other.id();

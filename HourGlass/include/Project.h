@@ -53,6 +53,7 @@ struct Project {
 
   projectid_t id() const;
 
+  bool operator<(const Project& other) const;
   bool operator==(const projectid_t id) const;
 
   QString name;

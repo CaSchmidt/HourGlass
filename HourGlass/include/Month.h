@@ -63,6 +63,7 @@ struct Month {
   int weekNumber(const int day) const;
 
   bool operator<(const Month& other) const;
+  bool operator>(const Month& other) const;
   bool operator==(const Month& other) const;
   bool operator==(const int id) const;
 

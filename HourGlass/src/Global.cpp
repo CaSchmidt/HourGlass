@@ -85,6 +85,11 @@ bool Context::isMonth(const int id) const
   return std::find(months.cbegin(), months.cend(), id) != months.cend();
 }
 
+void Context::sortMonths()
+{
+  std::sort(months.begin(), months.end(), std::greater<Month>());
+}
+
 bool Context::add(Project p)
 {
   if( !p  ||  isProject(p.id()) ) {
@@ -108,6 +113,19 @@ Project *Context::findProject(const projectid_t id) const
 bool Context::isProject(const projectid_t id) const
 {
   return std::find(projects.cbegin(), projects.cend(), id) != projects.cend();
+}
+
+Project Context::newProject(const QString& name) const
+{
+  constexpr projectid_t ONE = 1;
+
+  const auto hit = std::max_element(projects.cbegin(), projects.cend());
+
+  const projectid_t newId = hit != projects.cend()
+      ? hit->id() + ONE
+      : ONE;
+
+  return Project(newId, name);
 }
 
 ////// Public ////////////////////////////////////////////////////////////////

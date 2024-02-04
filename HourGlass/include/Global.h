@@ -53,10 +53,12 @@ struct Context {
   bool add(Month m);
   Month *findMonth(const int id) const;
   bool isMonth(const int id) const;
+  void sortMonths();
 
   bool add(Project p);
   Project *findProject(const projectid_t id) const;
   bool isProject(const projectid_t id) const;
+  Project newProject(const QString& name) const;
 
   Months months;
   Projects projects;
