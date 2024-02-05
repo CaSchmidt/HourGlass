@@ -51,8 +51,8 @@ struct Context {
   void clear();
 
   bool add(Month m);
-  Month *findMonth(const int id) const;
-  bool isMonth(const int id) const;
+  Month *findMonth(const monthid_t id) const;
+  bool isMonth(const monthid_t id) const;
   void sortMonths();
 
   bool add(Project p);

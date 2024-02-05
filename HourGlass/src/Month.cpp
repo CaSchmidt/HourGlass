@@ -55,7 +55,7 @@ bool Month::isValid() const
   return QDate::isValid(_year, _month, 1);
 }
 
-int Month::id() const
+monthid_t Month::id() const
 {
   return isValid()
       ? make_monthid(_year, _month)
@@ -147,19 +147,19 @@ bool Month::operator==(const Month& other) const
   return isValid()  &&  other  &&  id() == other.id();
 }
 
-bool Month::operator==(const int id) const
+bool Month::operator==(const monthid_t id) const
 {
   return isValid()  &&  this->id() == id;
 }
 
 ////// Public ////////////////////////////////////////////////////////////////
 
-int make_monthid(const int year, const int month)
+monthid_t make_monthid(const int year, const int month)
 {
   return year*100 + month;
 }
 
-std::pair<int,int> split_monthid(const int id)
+SplitId split_monthid(const monthid_t id)
 {
   return std::pair<int,int>(id/100, id%100);
 }

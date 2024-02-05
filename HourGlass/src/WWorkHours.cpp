@@ -140,8 +140,8 @@ void WWorkHours::setMonth(int index)
 {
   showMonth();
 
-  const int mid = ui->monthCombo->itemData(index).toInt();
-  _model->setMonth(global.findMonth(mid));
+  const monthid_t id = ui->monthCombo->itemData(index).toInt();
+  _model->setMonth(global.findMonth(id));
 }
 
 void WWorkHours::showMonth()

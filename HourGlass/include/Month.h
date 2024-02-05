@@ -39,6 +39,8 @@
 
 class QDate;
 
+using monthid_t = int;
+
 struct Month {
   Month(const int year = 0, const int month = 0) noexcept;
   Month(const QDate& date) noexcept;
@@ -50,7 +52,7 @@ struct Month {
     return isValid();
   }
 
-  int id() const;
+  monthid_t id() const;
 
   bool add(Item i);
   int days() const;
@@ -67,7 +69,7 @@ struct Month {
   bool operator<(const Month& other) const;
   bool operator>(const Month& other) const;
   bool operator==(const Month& other) const;
-  bool operator==(const int id) const;
+  bool operator==(const monthid_t id) const;
 
   Items items;
 
@@ -78,6 +80,8 @@ private:
 
 using Months = std::vector<Month>;
 
-int make_monthid(const int year, const int month);
+monthid_t make_monthid(const int year, const int month);
 
-std::pair<int,int> split_monthid(const int id);
+using SplitId = std::pair<int,int>;
+
+SplitId split_monthid(const monthid_t id);

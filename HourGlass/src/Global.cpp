@@ -71,7 +71,7 @@ bool Context::add(Month m)
   return true;
 }
 
-Month *Context::findMonth(const int id) const
+Month *Context::findMonth(const monthid_t id) const
 {
   const auto hit = std::find(months.cbegin(), months.cend(), id);
 
@@ -80,7 +80,7 @@ Month *Context::findMonth(const int id) const
       : nullptr;
 }
 
-bool Context::isMonth(const int id) const
+bool Context::isMonth(const monthid_t id) const
 {
   return std::find(months.cbegin(), months.cend(), id) != months.cend();
 }
