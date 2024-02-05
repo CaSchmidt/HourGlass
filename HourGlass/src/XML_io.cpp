@@ -38,6 +38,43 @@
 #include "Context.h"
 #include "XML_tags.h"
 
+////// Private ///////////////////////////////////////////////////////////////
+
+template<typename T, typename WANT>
+using if_type_t = std::enable_if_t<std::is_same_v<T,WANT>,T>;
+
+template<typename T>
+inline if_type_t<T,int> toValue(const QString& s,
+                                bool *ok = nullptr, int base = 10)
+{
+  return s.toInt(ok, base);
+}
+
+template<typename T>
+inline if_type_t<T,unsigned int> toValue(const QString& s,
+                                         bool *ok = nullptr, int base = 10)
+{
+  return s.toUInt(ok, base);
+}
+
+template<typename T>
+inline T xmlAttributeValue(const QDomElement& elem, const QString& name,
+                           const T& errValue = T())
+{
+  const QString strValue = elem.attribute(name, QString());
+  if( strValue.isEmpty() ) {
+    return errValue;
+  }
+
+  bool ok{false};
+  const T value = toValue<T>(strValue, &ok);
+  if( !ok ) {
+    return errValue;
+  }
+
+  return value;
+}
+
 ////// Private - Read ////////////////////////////////////////////////////////
 
 bool xmlReadMonth(Context *context, const QDomElement& xml_month)
@@ -50,20 +87,15 @@ bool xmlReadMonth(Context *context, const QDomElement& xml_month)
     return true; // successfully ignored
   }
 
-  const QString idstr = xml_month.attribute(XML_mid);
-  if( idstr.isEmpty() ) {
+  const monthid_t id =
+      xmlAttributeValue<monthid_t>(xml_month, XML_mid, INVALID_MONTHID);
+  if( id == INVALID_MONTHID ) {
     return false;
   }
 
-  bool ok{false};
-  const int id = idstr.toInt(&ok);
-  if( !ok ) {
-    return false;
-  }
+  const SplitId sid = split_monthid(id);
 
-  const auto mid = split_monthid(id);
-
-  if( !context->add(Month(mid.first, mid.second)) ) {
+  if( !context->add(Month(sid.first, sid.second)) ) {
     return false;
   }
 
@@ -102,14 +134,9 @@ bool xmlReadProject(Context *context, const QDomElement& xml_project)
     return true; // successfully ignored
   }
 
-  const QString idstr = xml_project.attribute(XML_pid);
-  if( idstr.isEmpty() ) {
-    return false;
-  }
-
-  bool ok{false};
-  const projectid_t id = idstr.toUInt(&ok);
-  if( !ok ) {
+  const projectid_t id =
+      xmlAttributeValue<projectid_t>(xml_project, XML_pid, INVALID_PROJECTID);
+  if( id == INVALID_PROJECTID ) {
     return false;
   }
 
