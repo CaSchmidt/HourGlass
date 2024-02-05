@@ -35,7 +35,7 @@
 
 #include "XML_io.h"
 
-#include "Global.h"
+#include "Context.h"
 #include "XML_tags.h"
 
 ////// Private - Read ////////////////////////////////////////////////////////

@@ -31,6 +31,30 @@
 
 #pragma once
 
-#include "Context.h"
+#include "Month.h"
 
-extern Context global;
+struct Context {
+  Context() noexcept;
+
+  bool isValid() const;
+
+  inline explicit operator bool() const
+  {
+    return isValid();
+  }
+
+  void clear();
+
+  bool add(Month m);
+  Month *findMonth(const monthid_t id) const;
+  bool isMonth(const monthid_t id) const;
+  void sortMonths();
+
+  bool add(Project p);
+  Project *findProject(const projectid_t id) const;
+  bool isProject(const projectid_t id) const;
+  Project newProject(const QString& name) const;
+
+  Months months;
+  Projects projects;
+};
