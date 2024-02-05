@@ -41,6 +41,8 @@ class QDate;
 
 using monthid_t = int;
 
+constexpr monthid_t INVALID_MONTHID = 0;
+
 struct Month {
   Month(const int year = 0, const int month = 0) noexcept;
   Month(const QDate& date) noexcept;

@@ -59,7 +59,7 @@ monthid_t Month::id() const
 {
   return isValid()
       ? make_monthid(_year, _month)
-      : 0;
+      : INVALID_MONTHID;
 }
 
 bool Month::add(Item i)
@@ -161,5 +161,5 @@ monthid_t make_monthid(const int year, const int month)
 
 SplitId split_monthid(const monthid_t id)
 {
-  return std::pair<int,int>(id/100, id%100);
+  return SplitId(id/100, id%100);
 }
