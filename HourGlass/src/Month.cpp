@@ -102,7 +102,7 @@ bool Month::isWeekend(const int day) const
 
 numhour_t Month::sumDayHours(const std::size_t day) const
 {
-  if( day >= MAX_WORKDAYS ) {
+  if( day >= Hours().size() ) {
     return 0;
   }
 
