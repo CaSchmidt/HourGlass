@@ -61,7 +61,7 @@ void MonthModel::addItem(const projectid_t id)
   }
 
   beginInsertRows(QModelIndex(), rowCount() - 1, rowCount() - 1);
-  _month->add(*p);
+  _month->add(Item(p->id()));
   endInsertRows();
 }
 
@@ -124,13 +124,6 @@ void MonthModel::updateProjects()
     return;
   }
 
-  for(Item& item : _month->items) {
-    const Project *p = global.findProject(item.project.id());
-    if( p != nullptr ) {
-      item.project.name = p->name;
-    }
-  }
-
   emit dataChanged(index(0             , COL_Project),
                    index(rowCount() - 1, COL_Project));
 }
@@ -157,7 +150,10 @@ QVariant MonthModel::data(const QModelIndex& index,
       const Item& item = _month->items[row];
 
       if(        column == COL_Project ) {
-        return item.project.name;
+        const Project *p = global.findProject(item.projectId);
+        if( p != nullptr ) {
+          return p->name;
+        }
       } else if( column == COL_Description ) {
         return item.description;
       } else if( column == COL_Hours ) {

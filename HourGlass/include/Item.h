@@ -35,7 +35,7 @@
 #include "Hours.h"
 
 struct Item {
-  Item(const Project& project = Project(),
+  Item(const projectid_t projectId = INVALID_PROJECTID,
        const QString& description = QString()) noexcept;
 
   bool isValid() const;
@@ -47,9 +47,9 @@ struct Item {
 
   numhour_t sumHours() const;
 
-  QString description;
-  Project project;
-  Hours   hours;
+  QString     description;
+  projectid_t projectId{INVALID_PROJECTID};
+  Hours       hours;
 };
 
 using Items = std::vector<Item>;

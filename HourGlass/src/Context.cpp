@@ -43,7 +43,7 @@ bool Context::isValid() const
 {
   for(const Month& month : months) {
     for(const Item& item : month.items) {
-      if( !isProject(item.project.id()) ) {
+      if( !isProject(item.projectId) ) {
         return false;
       }
     } // For each Item

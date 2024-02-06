@@ -33,17 +33,17 @@
 
 ////// public ////////////////////////////////////////////////////////////////
 
-Item::Item(const Project& project,
+Item::Item(const projectid_t projectId,
            const QString& description) noexcept
   : description(description)
-  , project(project)
+  , projectId{projectId}
 {
   hours.fill(0);
 }
 
 bool Item::isValid() const
 {
-  return project.isValid();
+  return projectId != INVALID_PROJECTID;
 }
 
 numhour_t Item::sumHours() const
