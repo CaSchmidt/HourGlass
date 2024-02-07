@@ -29,7 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <QtCore/QObject>
+#include <QtCore/QCoreApplication>
 #include <QtWidgets/QMessageBox>
 #include <QtXml/QDomDocument>
 
@@ -37,6 +37,10 @@
 
 #include "Context.h"
 #include "XML_tags.h"
+
+////// Macros ////////////////////////////////////////////////////////////////
+
+#define TR_CTX  "XML_io"
 
 ////// Private ///////////////////////////////////////////////////////////////
 
@@ -365,8 +369,8 @@ bool xmlRead(Context& context, const QString& xmlContent, QWidget *parent)
   QString errmsg;
   int line, column;
   if( !doc.setContent(xmlContent, &errmsg, &line, &column) ) {
-    QMessageBox::critical(parent, QObject::tr("Error"),
-                          QObject::tr("XML(%1,%2):\n\"%3\"")
+    QMessageBox::critical(parent, QCoreApplication::translate(TR_CTX, "Error"),
+                          QCoreApplication::translate(TR_CTX, "XML(%1,%2):\n\"%3\"")
                           .arg(line)
                           .arg(column)
                           .arg(errmsg));

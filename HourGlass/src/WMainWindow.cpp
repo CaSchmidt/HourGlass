@@ -29,19 +29,14 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
-#include <QtCore/QTextStream>
 #include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#include <QtXml/QDomDocument>
 
 #include "WMainWindow.h"
 #include "ui_WMainWindow.h"
 
+#include "File_io.h"
 #include "Global.h"
 #include "ProjectModel.h"
-#include "XML_io.h"
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -91,54 +86,22 @@ void WMainWindow::open()
   }
 
   _lastfilename = filename;
-  const QString fileInfo = QFileInfo(_lastfilename).fileName();
 
-  // (2) Open file for reading ///////////////////////////////////////////////
-
-  QFile file(_lastfilename);
-  if( !file.open(QFile::ReadOnly) ) {
-    QMessageBox::critical(this, tr("Error"),
-                          tr("Unable to open file \"%1\"!")
-                          .arg(fileInfo));
-    _lastfilename.clear();
-    return;
-  }
-
-  // (3) Deserialize XML /////////////////////////////////////////////////////
-
-  QTextStream stream(&file);
-  stream.setCodec("UTF-8");
-  const QString xmlContent = stream.readAll();
-  file.close();
-
-  // (4) Parse XML ///////////////////////////////////////////////////////////
+  // (2) Read Hours file /////////////////////////////////////////////////////
 
   Context context;
-  if( !xmlRead(context, xmlContent, this) ) {
-    QMessageBox::critical(this, tr("Error"),
-                          tr("Unable to read XML file \"%1\"!")
-                          .arg(fileInfo));
+  if( !readHoursFile(context, _lastfilename, this) ) {
     _lastfilename.clear();
     return;
   }
 
-  if( !context ) {
-    QMessageBox::critical(this, tr("Error"),
-                          tr("Invalid context! (\"%1\")")
-                          .arg(fileInfo));
-    _lastfilename.clear();
-    return;
-  }
-
-  // (5) Update UI ///////////////////////////////////////////////////////////
+  // (3) Update UI ///////////////////////////////////////////////////////////
 
   ui->hoursWidget->clear();
   ui->projectsWidget->clear();
 
   ui->projectsWidget->initializeUi(std::move(context.projects));
   ui->hoursWidget->initializeUi(std::move(context.months));
-
-  // Done! ///////////////////////////////////////////////////////////////////
 }
 
 void WMainWindow::save()
@@ -152,31 +115,11 @@ void WMainWindow::save()
     return;
   }
 
-  // (2) Open file for writing ///////////////////////////////////////////////
+  // (2) Write Hours file ////////////////////////////////////////////////////
 
-  QFile file(_lastfilename);
-  if( !file.open(QFile::WriteOnly) ) {
-    QMessageBox::critical(this, tr("Error"),
-                          tr("Unable to save file \"%1\"!")
-                          .arg(QFileInfo(_lastfilename).fileName()));
+  if( !writeHoursFile(_lastfilename, global, this) ) {
     _lastfilename.clear();
-    return;
   }
-
-  // (3) Create XML //////////////////////////////////////////////////////////
-
-  const QString xmlContent = xmlWrite(global, this);
-
-  // (4) Serialize XML ///////////////////////////////////////////////////////
-
-  QTextStream stream(&file);
-  stream.setCodec("UTF-8");
-  stream << xmlContent;
-  stream.flush();
-
-  // Done! ///////////////////////////////////////////////////////////////////
-
-  file.close();
 }
 
 void WMainWindow::saveAs()

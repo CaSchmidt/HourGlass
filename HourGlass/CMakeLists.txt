@@ -24,6 +24,7 @@ list(APPEND HourGlass_FORMS
 
 list(APPEND HourGlass_HEADERS
   include/Context.h
+  include/File_io.h
   include/Global.h
   include/Hours.h
   include/Item.h
@@ -40,6 +41,7 @@ list(APPEND HourGlass_HEADERS
 
 list(APPEND HourGlass_SOURCES
   src/Context.cpp
+  src/File_io.cpp
   src/Global.cpp
   src/Item.cpp
   src/main.cpp
