@@ -36,5 +36,3 @@
 using Hours = std::array<double,31>;
 
 using numhour_t = Hours::value_type;
-
-inline constexpr auto MAX_WORKDAYS = Hours().size();
