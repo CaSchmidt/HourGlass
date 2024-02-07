@@ -37,5 +37,5 @@ struct Context;
 
 class QWidget;
 
-bool xmlRead(Context *context, const QString& xmlContent, QWidget *parent = nullptr);
-QString xmlWrite(const Context& context, QWidget *parent = nullptr);
+bool xmlRead(Context& context, const QString& xmlContent, QWidget *parent);
+QString xmlWrite(const Context& context, QWidget *parent);

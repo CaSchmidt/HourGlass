@@ -114,7 +114,7 @@ void WMainWindow::open()
   // (4) Parse XML ///////////////////////////////////////////////////////////
 
   Context context;
-  if( !xmlRead(&context, xmlContent, this) ) {
+  if( !xmlRead(context, xmlContent, this) ) {
     QMessageBox::critical(this, tr("Error"),
                           tr("Unable to read XML file \"%1\"!")
                           .arg(fileInfo));

@@ -94,12 +94,18 @@ inline T xmlAttributeValue(const QDomElement& elem, const QString& name,
   return value;
 }
 
-////// Private - Read ////////////////////////////////////////////////////////
-
-bool xmlReadHours(Hours& hours, const QDomElement& xml_hours)
+inline bool xmlIsTag(const QDomElement& elem, const QString& name)
 {
-  if( xml_hours.isNull()  ||  xml_hours.tagName() != XML_hours ) {
-    return true;
+  return !elem.isNull()  &&  elem.tagName() == name;
+}
+
+////// Private - Read Months /////////////////////////////////////////////////
+
+bool xmlReadHours(Hours& hours, const QDomElement& xml_item)
+{
+  const QDomElement xml_hours = xml_item.firstChildElement(XML_hours);
+  if( xml_hours.isNull() ) {
+    return true; // Optional
   }
 
   for(QDomElement xml_day = xml_hours.firstChildElement(XML_day);
@@ -122,8 +128,8 @@ bool xmlReadHours(Hours& hours, const QDomElement& xml_hours)
 
 bool xmlReadItem(Item& item, const QDomElement xml_item)
 {
-  if( xml_item.isNull()  ||  xml_item.tagName() != XML_item ) {
-    return true; // Optional
+  if( !xmlIsTag(xml_item, XML_item) ) {
+    return true; // successfully ignored
   }
 
   item.projectId = xmlAttributeValue<projectid_t>(xml_item, XML_pid, INVALID_PROJECTID);
@@ -134,12 +140,13 @@ bool xmlReadItem(Item& item, const QDomElement xml_item)
   QDomElement xml_description = xml_item.firstChildElement(XML_description);
   item.description = xml_description.text();
 
-  return xmlReadHours(item.hours, xml_item.firstChildElement(XML_hours));
+  return xmlReadHours(item.hours, xml_item);
 }
 
-bool xmlReadItems(Items& items, const QDomElement& xml_items)
+bool xmlReadItems(Items& items, const QDomElement& xml_month)
 {
-  if( xml_items.isNull()  ||  xml_items.tagName() != XML_items ) {
+  const QDomElement xml_items = xml_month.firstChildElement(XML_items);
+  if( xml_items.isNull() ) {
     return true; // Optional
   }
 
@@ -157,13 +164,9 @@ bool xmlReadItems(Items& items, const QDomElement& xml_items)
   return true;
 }
 
-bool xmlReadMonth(Context *context, const QDomElement& xml_month)
+bool xmlReadMonth(Context& context, const QDomElement& xml_month)
 {
-  if( context == nullptr  ||  xml_month.isNull() ) {
-    return false;
-  }
-
-  if( xml_month.tagName() != XML_month ) {
+  if( !xmlIsTag(xml_month, XML_month) ) {
     return true; // successfully ignored
   }
 
@@ -175,23 +178,19 @@ bool xmlReadMonth(Context *context, const QDomElement& xml_month)
 
   const SplitId sid = split_monthid(mid);
 
-  if( !context->add(Month(sid.first, sid.second)) ) {
+  if( !context.add(Month(sid.first, sid.second)) ) {
     return false;
   }
 
-  Month *month = context->findMonth(mid);
+  Month *month = context.findMonth(mid);
 
   return month != nullptr
-      ? xmlReadItems(month->items, xml_month.firstChildElement(XML_items))
+      ? xmlReadItems(month->items, xml_month)
       : false;
 }
 
-bool xmlReadMonths(Context *context, const QDomElement& xml_root)
+bool xmlReadMonths(Context& context, const QDomElement& xml_root)
 {
-  if( context == nullptr  ||  xml_root.isNull() ) {
-    return false;
-  }
-
   const QDomElement xml_months = xml_root.firstChildElement(XML_months);
   if( xml_months.isNull() ) {
     return true; // Optional
@@ -208,13 +207,11 @@ bool xmlReadMonths(Context *context, const QDomElement& xml_root)
   return true;
 }
 
-bool xmlReadProject(Context *context, const QDomElement& xml_project)
-{
-  if( context == nullptr  ||  xml_project.isNull() ) {
-    return false;
-  }
+////// Private - Read Projects ///////////////////////////////////////////////
 
-  if( xml_project.tagName() != XML_project ) {
+bool xmlReadProject(Context& context, const QDomElement& xml_project)
+{
+  if( !xmlIsTag(xml_project, XML_project) ) {
     return true; // successfully ignored
   }
 
@@ -226,19 +223,15 @@ bool xmlReadProject(Context *context, const QDomElement& xml_project)
 
   const QString name = xml_project.text().trimmed();
 
-  if( !context->add({id, name}) ) {
+  if( !context.add({id, name}) ) {
     return false;
   }
 
   return true;
 }
 
-bool xmlReadProjects(Context *context, const QDomElement& xml_root)
+bool xmlReadProjects(Context& context, const QDomElement& xml_root)
 {
-  if( context == nullptr  ||  xml_root.isNull() ) {
-    return false;
-  }
-
   const QDomElement xml_projects = xml_root.firstChildElement(XML_projects);
   if( xml_projects.isNull() ) {
     return true; // Optional
@@ -255,135 +248,117 @@ bool xmlReadProjects(Context *context, const QDomElement& xml_root)
   return true;
 }
 
-////// Private - Write ///////////////////////////////////////////////////////
+////// Private - Write Months ////////////////////////////////////////////////
 
-void xmlWriteHours(QDomDocument *doc, QDomElement *xml_item, const Item& item)
+void xmlWriteHours(QDomDocument& doc, QDomElement& xml_item, const Item& item)
 {
   constexpr numhour_t ZERO = 0;
 
-  if( doc == nullptr  ||  xml_item == nullptr  ||
-      item.sumHours() == ZERO ) { // Optional
-    return;
+  if( item.sumHours() == ZERO ) {
+    return; // Optional
   }
 
-  QDomElement xml_hours = doc->createElement(XML_hours);
-  xml_item->appendChild(xml_hours);
+  QDomElement xml_hours = doc.createElement(XML_hours);
+  xml_item.appendChild(xml_hours);
 
   for(std::size_t i = 0; i < item.hours.size(); i++) {
     if( item.hours[i] == ZERO ) {
       continue;
     }
 
-    QDomElement xml_day = doc->createElement(XML_day);
+    QDomElement xml_day = doc.createElement(XML_day);
     xml_day.setAttribute(XML_did, i);
     xml_hours.appendChild(xml_day);
 
-    QDomText xml_text = doc->createTextNode(toString(item.hours[i]));
+    QDomText xml_text = doc.createTextNode(toString(item.hours[i]));
     xml_day.appendChild(xml_text);
   }
 }
 
-void xmlWriteItem(QDomDocument *doc, QDomElement *xml_items, const Item& item)
+void xmlWriteItem(QDomDocument& doc, QDomElement& xml_items, const Item& item)
 {
-  if( doc == nullptr  ||  xml_items == nullptr ) {
-    return;
-  }
-
-  QDomElement xml_item = doc->createElement(XML_item);
+  QDomElement xml_item = doc.createElement(XML_item);
   xml_item.setAttribute(XML_pid, item.projectId);
-  xml_items->appendChild(xml_item);
+  xml_items.appendChild(xml_item);
 
-  QDomElement xml_description = doc->createElement(XML_description);
+  QDomElement xml_description = doc.createElement(XML_description);
   xml_item.appendChild(xml_description);
 
-  QDomText xml_text = doc->createTextNode(item.description);
+  QDomText xml_text = doc.createTextNode(item.description);
   xml_description.appendChild(xml_text);
 
-  xmlWriteHours(doc, &xml_item, item);
+  xmlWriteHours(doc, xml_item, item);
 }
 
-void xmlWriteItems(QDomDocument *doc, QDomElement *xml_month, const Items& items)
+void xmlWriteItems(QDomDocument& doc, QDomElement& xml_month, const Items& items)
 {
-  if( doc == nullptr  ||  xml_month == nullptr  ||
-      items.empty() ) { // Optional
-    return;
+  if( items.empty() ) {
+    return; // Optional
   }
 
-  QDomElement xml_items = doc->createElement(XML_items);
-  xml_month->appendChild(xml_items);
+  QDomElement xml_items = doc.createElement(XML_items);
+  xml_month.appendChild(xml_items);
 
   for(const Item& item : items) {
-    xmlWriteItem(doc, &xml_items, item);
+    xmlWriteItem(doc, xml_items, item);
   }
 }
 
-void xmlWriteMonth(QDomDocument *doc, QDomElement *xml_months, const Month& month)
+void xmlWriteMonth(QDomDocument& doc, QDomElement& xml_months, const Month& month)
 {
-  if( doc == nullptr  ||  xml_months == nullptr ) {
-    return;
-  }
-
-  QDomElement xml_month = doc->createElement(XML_month);
+  QDomElement xml_month = doc.createElement(XML_month);
   xml_month.setAttribute(XML_mid, month.id());
-  xml_months->appendChild(xml_month);
+  xml_months.appendChild(xml_month);
 
-  xmlWriteItems(doc, &xml_month, month.items);
+  xmlWriteItems(doc, xml_month, month.items);
 }
 
-void xmlWriteMonths(QDomDocument *doc, QDomElement *xml_root, const Months& months)
+void xmlWriteMonths(QDomDocument& doc, QDomElement& xml_root, const Months& months)
 {
-  if( doc == nullptr  ||  xml_root == nullptr  ||
-      months.empty() ) { // Optional
-    return;
+  if( months.empty() ) {
+    return; // Optional
   }
 
-  QDomElement xml_months = doc->createElement(XML_months);
-  xml_root->appendChild(xml_months);
+  QDomElement xml_months = doc.createElement(XML_months);
+  xml_root.appendChild(xml_months);
 
   for(const Month& month : months) {
-    xmlWriteMonth(doc, &xml_months, month);
+    xmlWriteMonth(doc, xml_months, month);
   }
 }
 
-void xmlWriteProject(QDomDocument *doc, QDomElement *xml_projects, const Project& project)
-{
-  if( doc == nullptr  ||  xml_projects == nullptr ) {
-    return;
-  }
+////// Private - Write Projects //////////////////////////////////////////////
 
-  QDomElement xml_project = doc->createElement(XML_project);
+void xmlWriteProject(QDomDocument& doc, QDomElement& xml_projects, const Project& project)
+{
+  QDomElement xml_project = doc.createElement(XML_project);
   xml_project.setAttribute(XML_pid, project.id());
 
-  QDomText xml_name = doc->createTextNode(project.name);
+  QDomText xml_name = doc.createTextNode(project.name);
   xml_project.appendChild(xml_name);
 
-  xml_projects->appendChild(xml_project);
+  xml_projects.appendChild(xml_project);
 }
 
-void xmlWriteProjects(QDomDocument *doc, QDomElement *xml_root, const Projects& projects)
+void xmlWriteProjects(QDomDocument& doc, QDomElement& xml_root, const Projects& projects)
 {
-  if( doc == nullptr  ||  xml_root == nullptr  ||
-      projects.empty() ) { // Optional
-    return;
+  if( projects.empty() ) {
+    return; // Optional
   }
 
-  QDomElement xml_projects = doc->createElement(XML_projects);
-  xml_root->appendChild(xml_projects);
+  QDomElement xml_projects = doc.createElement(XML_projects);
+  xml_root.appendChild(xml_projects);
 
   for(const Project& project : projects) {
-    xmlWriteProject(doc, &xml_projects, project);
+    xmlWriteProject(doc, xml_projects, project);
   }
 }
 
 ////// Public ////////////////////////////////////////////////////////////////
 
-bool xmlRead(Context *context, const QString& xmlContent, QWidget *parent)
+bool xmlRead(Context& context, const QString& xmlContent, QWidget *parent)
 {
-  if( context == nullptr ) {
-    return false;
-  }
-
-  context->clear();
+  context.clear();
 
   QDomDocument doc;
 
@@ -424,8 +399,8 @@ QString xmlWrite(const Context& context, QWidget * /*parent*/)
   QDomElement xml_root = doc.createElement(XML_HourGlass);
   doc.appendChild(xml_root);
 
-  xmlWriteProjects(&doc, &xml_root, context.projects);
-  xmlWriteMonths(&doc, &xml_root, context.months);
+  xmlWriteProjects(doc, xml_root, context.projects);
+  xmlWriteMonths(doc, xml_root, context.months);
 
   return doc.toString(2);
 }
