@@ -31,8 +31,6 @@
 
 #include "Global.h"
 
-static_assert( std::is_unsigned_v<std::size_t> );
-
 ////// Public ////////////////////////////////////////////////////////////////
 
 Context global;

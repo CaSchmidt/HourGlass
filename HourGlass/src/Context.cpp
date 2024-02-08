@@ -31,6 +31,8 @@
 
 #include "Context.h"
 
+static_assert( std::is_unsigned_v<std::size_t> );
+
 ////// public ////////////////////////////////////////////////////////////////
 
 Context::Context() noexcept
@@ -113,7 +115,7 @@ bool Context::isProject(const projectid_t id) const
   return std::find(projects.cbegin(), projects.cend(), id) != projects.cend();
 }
 
-Project Context::newProject(const QString& name) const
+Project Context::makeProject(const QString& name) const
 {
   constexpr projectid_t ONE = 1;
 

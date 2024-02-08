@@ -53,7 +53,7 @@ struct Context {
   bool add(Project p);
   Project *findProject(const projectid_t id) const;
   bool isProject(const projectid_t id) const;
-  Project newProject(const QString& name) const;
+  Project makeProject(const QString& name) const;
 
   Months months;
   Projects projects;
