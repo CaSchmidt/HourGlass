@@ -102,7 +102,7 @@ void WMainWindow::open()
 
   // TODO
   ui->projectsWidget->initializeUi(std::move(context._projects));
-  ui->hoursWidget->initializeUi(std::move(context.months));
+  ui->hoursWidget->initializeUi(std::move(context._months));
 }
 
 void WMainWindow::save()

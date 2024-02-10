@@ -48,7 +48,7 @@ public:
   ~WWorkHours();
 
   void clear();
-  void initializeUi(Months months);
+  void initializeUi(MonthDB months);
 
   MonthModel *model() const;
 

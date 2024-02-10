@@ -48,7 +48,8 @@ struct Context {
   bool add(Month m);
   Month *findMonth(const monthid_t id) const;
   bool isMonth(const monthid_t id) const;
-  void sortMonths();
+  MonthIDs listMonths() const;
+  void set(MonthDB months);
 
   bool add(Project p);
   Project *findProject(const projectid_t id) const;
@@ -57,9 +58,8 @@ struct Context {
   Project makeProject(const QString& name) const;
   void set(ProjectDB projects);
 
-  Months months;
-
 private:
+  MonthDB _months;
   ProjectDB _projects;
 
   friend class WMainWindow;

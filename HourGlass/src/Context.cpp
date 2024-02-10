@@ -40,23 +40,18 @@ inline bool operator<(const ProjectDB::value_type& a, const ProjectDB::value_typ
   return a.second.id() < b.second.id();
 }
 
-inline bool operator==(const ProjectDB::value_type& project, const projectid_t id)
-{
-  return project.second.id() == id;
-}
-
 ////// public ////////////////////////////////////////////////////////////////
 
 Context::Context() noexcept
-  : months()
+  : _months()
   , _projects()
 {
 }
 
 bool Context::isValid() const
 {
-  for(const Month& month : months) {
-    for(const Item& item : month.items) {
+  for(const auto& v : _months) {
+    for(const Item& item : v.second.items) {
       if( !isProject(item.projectId) ) {
         return false;
       }
@@ -68,7 +63,7 @@ bool Context::isValid() const
 
 void Context::clear()
 {
-  months.clear();
+  _months.clear();
   _projects.clear();
 }
 
@@ -80,28 +75,46 @@ bool Context::add(Month m)
     return false;
   }
 
-  months.push_back(std::move(m));
+  const auto result = _months.emplace(m.id(), std::move(m));
 
-  return true;
+  return isMonth(result.first->second.id());
 }
 
 Month *Context::findMonth(const monthid_t id) const
 {
-  const auto hit = std::find(months.cbegin(), months.cend(), id);
+  const auto hit = _months.find(id);
 
-  return hit != months.cend()
-      ? &const_cast<Month&>(*hit)
+  return hit != _months.cend()
+      ? &const_cast<Month&>(hit->second)
       : nullptr;
 }
 
 bool Context::isMonth(const monthid_t id) const
 {
-  return std::find(months.cbegin(), months.cend(), id) != months.cend();
+  return _months.contains(id);
 }
 
-void Context::sortMonths()
+MonthIDs Context::listMonths() const
 {
-  std::sort(months.begin(), months.end(), std::greater<Month>());
+  if( _months.empty() ) {
+    return MonthIDs();
+  }
+
+  MonthIDs result;
+
+  result.reserve(_months.size());
+  for(const auto& v : _months) {
+    result.push_back(v.second.id());
+  }
+
+  std::sort(result.begin(), result.end(), std::greater<monthid_t>());
+
+  return result;
+}
+
+void Context::set(MonthDB months)
+{
+  _months = std::move(months);
 }
 
 ////// public - Project //////////////////////////////////////////////////////
@@ -119,7 +132,7 @@ bool Context::add(Project p)
 
 Project *Context::findProject(const projectid_t id) const
 {
-  const auto hit = std::find(_projects.cbegin(), _projects.cend(), id);
+  const auto hit = _projects.find(id);
 
   return hit != _projects.cend()
       ? &const_cast<Project&>(hit->second)

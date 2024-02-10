@@ -83,9 +83,9 @@ void WWorkHours::clear()
   _model->clearMonth();
 }
 
-void WWorkHours::initializeUi(Months months)
+void WWorkHours::initializeUi(MonthDB months)
 {
-  global.months = std::move(months);
+  global.set(std::move(months));
   initMonthsCombo();
 }
 
@@ -217,10 +217,14 @@ void WWorkHours::initHoursMenu()
 
 void WWorkHours::initMonthsCombo()
 {
-  global.sortMonths();
-
   ui->monthCombo->clear();
-  for(const Month& m : global.months) {
-    ui->monthCombo->addItem(m.toString(), m.id());
+  const MonthIDs months = global.listMonths();
+  for(const monthid_t id : months) {
+    const Month *m = global.findMonth(id);
+    if( m == nullptr ) {
+      continue;
+    }
+
+    ui->monthCombo->addItem(m->toString(), m->id());
   }
 }

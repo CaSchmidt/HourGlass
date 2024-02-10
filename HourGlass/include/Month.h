@@ -31,8 +31,6 @@
 
 #pragma once
 
-#include <utility>
-
 #include <QtCore/QString>
 
 #include "Item.h"
@@ -68,11 +66,6 @@ struct Month {
   QString toString() const;
   int weekNumber(const int day) const;
 
-  bool operator<(const Month& other) const;
-  bool operator>(const Month& other) const;
-  bool operator==(const Month& other) const;
-  bool operator==(const monthid_t id) const;
-
   Items items;
 
 private:
@@ -80,7 +73,9 @@ private:
   int _year{0};
 };
 
-using Months = std::vector<Month>;
+using MonthDB = std::unordered_map<monthid_t,Month>;
+
+using MonthIDs = std::vector<monthid_t>;
 
 monthid_t make_monthid(const int year, const int month);
 

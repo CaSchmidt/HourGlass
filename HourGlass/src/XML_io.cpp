@@ -317,8 +317,9 @@ void xmlWriteMonth(QDomDocument& doc, QDomElement& xml_months, const Month& mont
   xmlWriteItems(doc, xml_month, month.items);
 }
 
-void xmlWriteMonths(QDomDocument& doc, QDomElement& xml_root, const Months& months)
+void xmlWriteMonths(QDomDocument& doc, QDomElement& xml_root, const Context& context)
 {
+  const MonthIDs months = context.listMonths();
   if( months.empty() ) {
     return; // Optional
   }
@@ -326,8 +327,13 @@ void xmlWriteMonths(QDomDocument& doc, QDomElement& xml_root, const Months& mont
   QDomElement xml_months = doc.createElement(XML_months);
   xml_root.appendChild(xml_months);
 
-  for(const Month& month : months) {
-    xmlWriteMonth(doc, xml_months, month);
+  for(const monthid_t id : months) {
+    const Month *m = context.findMonth(id);
+    if( m == nullptr ) {
+      continue;
+    }
+
+    xmlWriteMonth(doc, xml_months, *m);
   }
 }
 
@@ -410,7 +416,7 @@ QString xmlWrite(const Context& context, QWidget * /*parent*/)
   doc.appendChild(xml_root);
 
   xmlWriteProjects(doc, xml_root, context);
-  xmlWriteMonths(doc, xml_root, context.months);
+  xmlWriteMonths(doc, xml_root, context);
 
   return doc.toString(2);
 }

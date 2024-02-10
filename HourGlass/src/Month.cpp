@@ -132,26 +132,6 @@ int Month::weekNumber(const int day) const
   return QDate(_year, _month, day).weekNumber();
 }
 
-bool Month::operator<(const Month& other) const
-{
-  return isValid()  &&  other  &&  id() < other.id();
-}
-
-bool Month::operator>(const Month& other) const
-{
-  return isValid()  &&  other  &&  id() > other.id();
-}
-
-bool Month::operator==(const Month& other) const
-{
-  return isValid()  &&  other  &&  id() == other.id();
-}
-
-bool Month::operator==(const monthid_t id) const
-{
-  return isValid()  &&  this->id() == id;
-}
-
 ////// Public ////////////////////////////////////////////////////////////////
 
 monthid_t make_monthid(const int year, const int month)
