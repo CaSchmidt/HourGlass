@@ -133,7 +133,7 @@ void WWorkHours::addMonth()
   initMonthsCombo();
 }
 
-void WWorkHours::resizeColumns()
+void WWorkHours::fitColumns()
 {
   QHeaderView *view = ui->hoursView->horizontalHeader();
   if( view == nullptr ) {
@@ -142,24 +142,26 @@ void WWorkHours::resizeColumns()
   view->resizeSections(QHeaderView::ResizeToContents);
 }
 
-void WWorkHours::setMonth(int index)
-{
-  showMonth();
-
-  const monthid_t id = ui->monthCombo->itemData(index).toInt();
-  _model->setMonth(global.findMonth(id));
-}
-
-void WWorkHours::showMonth()
+void WWorkHours::resetColumns()
 {
   QHeaderView *view = ui->hoursView->horizontalHeader();
   if( view == nullptr ) {
     return;
   }
 
-  for(int i = MonthModel::Num_ItemColumns; i < _model->columnCount(); i++) {
+  view->resetDefaultSectionSize();
+  for(int i = 0; i < _model->columnCount(); i++) {
     view->showSection(i);
+    view->resizeSection(i, view->defaultSectionSize());
   }
+}
+
+void WWorkHours::setMonth(int index)
+{
+  resetColumns();
+
+  const monthid_t id = ui->monthCombo->itemData(index).toInt();
+  _model->setMonth(global.findMonth(id));
 }
 
 void WWorkHours::showWeek()
@@ -199,12 +201,12 @@ void WWorkHours::initHoursMenu()
 
   action = new QAction(tr("Fit columns"), ui->hoursView);
   connect(action, &QAction::triggered,
-          this, &WWorkHours::resizeColumns);
+          this, &WWorkHours::fitColumns);
   ui->hoursView->addAction(action);
 
-  action = new QAction(tr("Show month"), ui->hoursView);
+  action = new QAction(tr("Reset columns"), ui->hoursView);
   connect(action, &QAction::triggered,
-          this, &WWorkHours::showMonth);
+          this, &WWorkHours::resetColumns);
   ui->hoursView->addAction(action);
 
   action = new QAction(tr("Show week"), ui->hoursView);

@@ -58,9 +58,9 @@ public slots:
 private slots:
   void addItem();
   void addMonth();
-  void resizeColumns();
+  void fitColumns();
+  void resetColumns();
   void setMonth(int index);
-  void showMonth();
   void showWeek();
   void updateMonth(const QString& s);
 
