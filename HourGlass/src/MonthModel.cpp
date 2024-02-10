@@ -297,6 +297,7 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
         emit dataChanged(index, index);
 
         return true;
+
       } else if( isDayColumn(column) ) {
         item.hours[column - Num_ItemColumns] = toDouble(value.toString());
 
@@ -309,7 +310,8 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
         emit dataChanged(dyHrsIdx, dyHrsIdx);
 
         return true;
-      }
+
+      } // column
 
     } // row
   } // Qt::ItemRole
