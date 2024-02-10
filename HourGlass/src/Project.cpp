@@ -48,13 +48,3 @@ projectid_t Project::id() const
 {
   return _id;
 }
-
-bool Project::operator<(const Project& other) const
-{
-  return _id < other._id;
-}
-
-bool Project::operator==(const projectid_t id) const
-{
-  return _id == id;
-}

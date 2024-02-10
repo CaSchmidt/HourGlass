@@ -50,22 +50,24 @@ void ProjectModel::addProject(const QString& name)
     return;
   }
 
-  beginInsertRows(QModelIndex(), rowCount(), rowCount());
+  beginResetModel();
   global.add(global.makeProject(name));
-  endInsertRows();
+  _projects = global.listProjects();
+  endResetModel();
 
   emit projectsChanged();
 }
 
 void ProjectModel::clearProjects()
 {
-  setProjects(Projects());
+  setProjects(ProjectDB());
 }
 
-void ProjectModel::setProjects(Projects projects)
+void ProjectModel::setProjects(ProjectDB projects)
 {
   beginResetModel();
-  global.projects = std::move(projects);
+  global.set(std::move(projects));
+  _projects = global.listProjects();
   endResetModel();
 
   emit projectsChanged();
@@ -83,20 +85,23 @@ QVariant ProjectModel::data(const QModelIndex& index,
     return QVariant();
   }
 
-  const Projects& projects = global.projects;
+  const int column = index.column();
+
+  const Project *p = project(index.row());
+  if( p == nullptr ) {
+    return QVariant();
+  }
 
   if(        role == Qt::DisplayRole ) {
-    const std::size_t row = index.row();
-    if(        index.column() == COL_Id ) {
-      return projects[row].id();
-    } else if( index.column() == COL_Name ) {
-      return projects[row].name;
+    if(        column == COL_Id ) {
+      return p->id();
+    } else if( column == COL_Name ) {
+      return p->name;
     }
 
   } else if( role == Qt::EditRole ) {
-    const std::size_t row = index.row();
-    if( index.column() == COL_Name ) {
-      return projects[row].name;
+    if( column == COL_Name ) {
+      return p->name;
     }
 
   }
@@ -118,9 +123,9 @@ QVariant ProjectModel::headerData(int section, Qt::Orientation orientation,
 {
   if( role == Qt::DisplayRole ) {
     if( orientation == Qt::Horizontal ) {
-      if(        section == 0 ) {
+      if(        section == COL_Id ) {
         return tr("ID");
-      } else if( section == 1 ) {
+      } else if( section == COL_Name ) {
         return tr("Name");
       }
     }
@@ -131,23 +136,44 @@ QVariant ProjectModel::headerData(int section, Qt::Orientation orientation,
 
 int ProjectModel::rowCount(const QModelIndex& /*index*/) const
 {
-  return int(global.projects.size());
+  return int(_projects.size());
 }
 
 bool ProjectModel::setData(const QModelIndex& index, const QVariant& value,
                            int role)
 {
-  const QString name = value.toString();
-
-  if( role != Qt::EditRole  ||  index.column() != COL_Name  ||  name.isEmpty() ) {
+  if( !index.isValid()  ||  role != Qt::EditRole ) {
     return false;
   }
 
-  const std::size_t row = index.row();
-  global.projects[row].name = name;
+  const int column = index.column();
 
-  emit dataChanged(index, index);
-  emit projectsChanged();
+  Project *p = project(index.row());
+  if( p == nullptr ) {
+    return false;
+  }
 
-  return true;
+  if( column == COL_Name ) {
+    const QString name = value.toString();
+
+    if( !name.isEmpty() ) {
+      p->name = name;
+
+      emit dataChanged(index, index);
+      emit projectsChanged();
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////// private ///////////////////////////////////////////////////////////////
+
+Project *ProjectModel::project(const int row) const
+{
+  return 0 <= row  &&  row < rowCount()
+      ? global.findProject(_projects[std::size_t(row)])
+      : nullptr;
 }

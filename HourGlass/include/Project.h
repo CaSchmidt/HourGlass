@@ -32,6 +32,7 @@
 #pragma once
 
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 
 #include <QtCore/QString>
@@ -53,13 +54,12 @@ struct Project {
 
   projectid_t id() const;
 
-  bool operator<(const Project& other) const;
-  bool operator==(const projectid_t id) const;
-
   QString name;
 
 private:
   projectid_t _id{INVALID_PROJECTID};
 };
 
-using Projects = std::vector<Project>;
+using ProjectDB = std::unordered_map<projectid_t,Project>;
+
+using ProjectIDs = std::vector<projectid_t>;

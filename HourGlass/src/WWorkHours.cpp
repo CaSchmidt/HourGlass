@@ -101,8 +101,14 @@ void WWorkHours::updateProjects()
   // Projects Combo //////////////////////////////////////////////////////////
 
   ui->projectCombo->clear();
-  for(const Project& p : global.projects) {
-    ui->projectCombo->addItem(p.name, p.id());
+  const ProjectIDs projects = global.listProjects();
+  for(const projectid_t id : projects) {
+    const Project *p = global.findProject(id);
+    if( p == nullptr ) {
+      continue;
+    }
+
+    ui->projectCombo->addItem(p->name, p->id());
   }
 
   // Data Model //////////////////////////////////////////////////////////////
@@ -191,7 +197,7 @@ void WWorkHours::initHoursMenu()
 {
   QAction *action = nullptr;
 
-  action = new QAction(tr("Resize columns"), ui->hoursView);
+  action = new QAction(tr("Fit columns"), ui->hoursView);
   connect(action, &QAction::triggered,
           this, &WWorkHours::resizeColumns);
   ui->hoursView->addAction(action);

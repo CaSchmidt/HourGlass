@@ -68,7 +68,7 @@ void WProjects::clear()
   _model->clearProjects();
 }
 
-void WProjects::initializeUi(Projects projects)
+void WProjects::initializeUi(ProjectDB projects)
 {
   _model->setProjects(std::move(projects));
 }

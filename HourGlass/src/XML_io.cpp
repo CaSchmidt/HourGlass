@@ -344,8 +344,9 @@ void xmlWriteProject(QDomDocument& doc, QDomElement& xml_projects, const Project
   xml_projects.appendChild(xml_project);
 }
 
-void xmlWriteProjects(QDomDocument& doc, QDomElement& xml_root, const Projects& projects)
+void xmlWriteProjects(QDomDocument& doc, QDomElement& xml_root, const Context& context)
 {
+  const ProjectIDs projects = context.listProjects();
   if( projects.empty() ) {
     return; // Optional
   }
@@ -353,8 +354,13 @@ void xmlWriteProjects(QDomDocument& doc, QDomElement& xml_root, const Projects& 
   QDomElement xml_projects = doc.createElement(XML_projects);
   xml_root.appendChild(xml_projects);
 
-  for(const Project& project : projects) {
-    xmlWriteProject(doc, xml_projects, project);
+  for(const projectid_t id : projects) {
+    const Project *p = context.findProject(id);
+    if( p == nullptr ) {
+      continue;
+    }
+
+    xmlWriteProject(doc, xml_projects, *p);
   }
 }
 
@@ -403,7 +409,7 @@ QString xmlWrite(const Context& context, QWidget * /*parent*/)
   QDomElement xml_root = doc.createElement(XML_HourGlass);
   doc.appendChild(xml_root);
 
-  xmlWriteProjects(doc, xml_root, context.projects);
+  xmlWriteProjects(doc, xml_root, context);
   xmlWriteMonths(doc, xml_root, context.months);
 
   return doc.toString(2);

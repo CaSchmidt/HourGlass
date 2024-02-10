@@ -49,7 +49,7 @@ public:
 
   void addProject(const QString& name);
   void clearProjects();
-  void setProjects(Projects projects);
+  void setProjects(ProjectDB projects);
 
   int columnCount(const QModelIndex& index) const;
   QVariant data(const QModelIndex& index,
@@ -60,6 +60,11 @@ public:
   int rowCount(const QModelIndex& index = QModelIndex()) const;
   bool setData(const QModelIndex& index, const QVariant& value,
                int role);
+
+private:
+  Project *project(const int row) const;
+
+  ProjectIDs _projects;
 
 signals:
   void projectsChanged();

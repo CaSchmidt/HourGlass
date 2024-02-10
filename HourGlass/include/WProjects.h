@@ -48,7 +48,7 @@ public:
   ~WProjects();
 
   void clear();
-  void initializeUi(Projects projects);
+  void initializeUi(ProjectDB projects);
 
   ProjectModel *model() const;
 

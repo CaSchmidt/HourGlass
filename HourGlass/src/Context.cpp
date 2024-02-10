@@ -31,13 +31,25 @@
 
 #include "Context.h"
 
+////// Private ///////////////////////////////////////////////////////////////
+
 static_assert( std::is_unsigned_v<std::size_t> );
+
+inline bool operator<(const ProjectDB::value_type& a, const ProjectDB::value_type& b)
+{
+  return a.second.id() < b.second.id();
+}
+
+inline bool operator==(const ProjectDB::value_type& project, const projectid_t id)
+{
+  return project.second.id() == id;
+}
 
 ////// public ////////////////////////////////////////////////////////////////
 
 Context::Context() noexcept
   : months()
-  , projects()
+  , _projects()
 {
 }
 
@@ -57,8 +69,10 @@ bool Context::isValid() const
 void Context::clear()
 {
   months.clear();
-  projects.clear();
+  _projects.clear();
 }
+
+////// public - Month ////////////////////////////////////////////////////////
 
 bool Context::add(Month m)
 {
@@ -90,40 +104,65 @@ void Context::sortMonths()
   std::sort(months.begin(), months.end(), std::greater<Month>());
 }
 
+////// public - Project //////////////////////////////////////////////////////
+
 bool Context::add(Project p)
 {
   if( !p  ||  isProject(p.id()) ) {
     return false;
   }
 
-  projects.push_back(std::move(p));
+  const auto result = _projects.emplace(p.id(), std::move(p));
 
-  return true;
+  return isProject(result.first->second.id());
 }
 
 Project *Context::findProject(const projectid_t id) const
 {
-  const auto hit = std::find(projects.cbegin(), projects.cend(), id);
+  const auto hit = std::find(_projects.cbegin(), _projects.cend(), id);
 
-  return hit != projects.cend()
-      ? &const_cast<Project&>(*hit)
+  return hit != _projects.cend()
+      ? &const_cast<Project&>(hit->second)
       : nullptr;
 }
 
 bool Context::isProject(const projectid_t id) const
 {
-  return std::find(projects.cbegin(), projects.cend(), id) != projects.cend();
+  return _projects.contains(id);
+}
+
+ProjectIDs Context::listProjects() const
+{
+  if( _projects.empty() ) {
+    return ProjectIDs();
+  }
+
+  ProjectIDs result;
+
+  result.reserve(_projects.size());
+  for(const auto& v : _projects) {
+    result.push_back(v.second.id());
+  }
+
+  std::sort(result.begin(), result.end());
+
+  return result;
 }
 
 Project Context::makeProject(const QString& name) const
 {
   constexpr projectid_t ONE = 1;
 
-  const auto hit = std::max_element(projects.cbegin(), projects.cend());
+  const auto hit = std::max_element(_projects.cbegin(), _projects.cend());
 
-  const projectid_t newId = hit != projects.cend()
-      ? hit->id() + ONE
+  const projectid_t newId = hit != _projects.cend()
+      ? hit->second.id() + ONE
       : ONE;
 
   return Project(newId, name);
+}
+
+void Context::set(ProjectDB projects)
+{
+  _projects = std::move(projects);
 }
