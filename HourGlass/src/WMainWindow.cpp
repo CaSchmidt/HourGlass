@@ -29,6 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <QtCore/QSettings>
 #include <QtWidgets/QFileDialog>
 
 #include "WMainWindow.h"
@@ -37,6 +38,7 @@
 #include "File_io.h"
 #include "Global.h"
 #include "ProjectModel.h"
+#include "RecentFiles.h"
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -45,6 +47,11 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   , ui{new Ui::WMainWindow}
 {
   ui->setupUi(this);
+
+  // Recent Files ////////////////////////////////////////////////////////////
+
+  _recent = new RecentFiles(this);
+  ui->recentFilesAction->setMenu(_recent->menu());
 
   // Actions /////////////////////////////////////////////////////////////////
 
@@ -67,10 +74,19 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
   connect(ui->projectsWidget->model(), &ProjectModel::projectsChanged,
           ui->hoursWidget, &WWorkHours::updateProjects);
+
+  connect(_recent, &RecentFiles::selected,
+          this, &WMainWindow::openFile);
+
+  // Settings ////////////////////////////////////////////////////////////////
+
+  loadSettings();
 }
 
 WMainWindow::~WMainWindow()
 {
+  saveSettings();
+
   delete ui;
 }
 
@@ -78,24 +94,30 @@ WMainWindow::~WMainWindow()
 
 void WMainWindow::open()
 {
-  // (1) Get filename ////////////////////////////////////////////////////////
-
   const QString filename = getFilename();
   if( filename.isEmpty() ) {
     return;
   }
 
-  _lastfilename = filename;
+  openFile(filename);
+}
 
-  // (2) Read Hours file /////////////////////////////////////////////////////
-
-  Context context;
-  if( !readHoursFile(context, _lastfilename, this) ) {
-    _lastfilename.clear();
+void WMainWindow::openFile(const QString& filename)
+{
+  if( filename.isEmpty() ) {
     return;
   }
 
-  // (3) Update UI ///////////////////////////////////////////////////////////
+  // (1) Read Hours file /////////////////////////////////////////////////////
+
+  Context context;
+  if( !readHoursFile(context, filename, this) ) {
+    return;
+  }
+
+  _recent->add(filename);
+
+  // (2) Update UI ///////////////////////////////////////////////////////////
 
   ui->hoursWidget->clear();
   ui->projectsWidget->clear();
@@ -109,25 +131,28 @@ void WMainWindow::save()
 {
   // (1) Get filename ////////////////////////////////////////////////////////
 
-  _lastfilename = _lastfilename.isEmpty()
+  QString filename = _recent->takeLatest();
+  filename = filename.isEmpty()
       ? getFilename(true)
-      : _lastfilename;
-  if( _lastfilename.isEmpty() ) {
+      : filename;
+  if( filename.isEmpty() ) {
     return;
   }
 
   // (2) Write Hours file ////////////////////////////////////////////////////
 
-  if( !writeHoursFile(_lastfilename, global, this) ) {
-    _lastfilename.clear();
+  if( !writeHoursFile(filename, global, this) ) {
+    return;
   }
+
+  _recent->add(filename);
 }
 
 void WMainWindow::saveAs()
 {
   const QString filename = getFilename(true);
   if( !filename.isEmpty() ) {
-    _lastfilename = filename;
+    _recent->add(filename);
     save();
   }
 }
@@ -136,8 +161,10 @@ void WMainWindow::saveAs()
 
 QString WMainWindow::getFilename(const bool is_save)
 {
-  const QString dir = !_lastfilename.isEmpty()
-      ? QFileInfo(_lastfilename).canonicalPath()
+  const QString lastfilename = _recent->latest();
+
+  const QString dir = !lastfilename.isEmpty()
+      ? QFileInfo(lastfilename).canonicalPath()
       : QString();
 
   const QString filename = is_save
@@ -147,4 +174,25 @@ QString WMainWindow::getFilename(const bool is_save)
                                      dir, tr("HourGlass files (*.xml)"));
 
   return filename;
+}
+
+void WMainWindow::loadSettings()
+{
+  QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+                     QStringLiteral("csLabs"),
+                     QStringLiteral("HourGlass"));
+
+  _recent->load(settings);
+}
+
+void WMainWindow::saveSettings()
+{
+  QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+                     QStringLiteral("csLabs"),
+                     QStringLiteral("HourGlass"));
+  settings.clear();
+
+  _recent->save(settings);
+
+  settings.sync();
 }

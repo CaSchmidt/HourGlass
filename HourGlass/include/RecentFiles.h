@@ -31,32 +31,45 @@
 
 #pragma once
 
-#include <QtWidgets/QMainWindow>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 
-namespace Ui {
-  class WMainWindow;
-} // namespace Ui
+class QMenu;
+class QSettings;
+class QWidget;
 
-class RecentFiles;
-
-class WMainWindow : public QMainWindow {
+class RecentFiles : public QObject {
   Q_OBJECT
 public:
-  WMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
-  ~WMainWindow();
+  RecentFiles(QWidget *parent = nullptr);
+  ~RecentFiles();
+
+  QString latest() const;
+
+  QMenu *menu();
+
+  QString takeLatest();
+
+  void load(const QSettings& settings);
+  void save(QSettings& settings) const;
+
+public slots:
+  void add(const QString& filename);
+  void clear();
+  void removeLatest();
 
 private slots:
-  void open();
-  void openFile(const QString& filename);
-  void save();
-  void saveAs();
+  void makeMenu();
+  void triggerRecent();
 
 private:
-  QString getFilename(const bool is_save = false);
-  void loadSettings();
-  void saveSettings();
+  static constexpr int MAX_RECENT = 10;
 
-  Ui::WMainWindow *ui{nullptr};
+  void addAction(const QString& filename);
 
-  RecentFiles *_recent{nullptr};
+  QMenu *_menu{nullptr};
+  QStringList _recent;
+
+signals:
+  void selected(const QString& filename);
 };

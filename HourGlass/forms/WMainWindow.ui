@@ -107,6 +107,8 @@
     <addaction name="saveAction"/>
     <addaction name="saveAsAction"/>
     <addaction name="separator"/>
+    <addaction name="recentFilesAction"/>
+    <addaction name="separator"/>
     <addaction name="quitAction"/>
    </widget>
    <addaction name="fileMenu"/>
@@ -130,6 +132,11 @@
   <action name="saveAction">
    <property name="text">
     <string>&amp;Save</string>
+   </property>
+  </action>
+  <action name="recentFilesAction">
+   <property name="text">
+    <string>&amp;Recent files</string>
    </property>
   </action>
  </widget>
