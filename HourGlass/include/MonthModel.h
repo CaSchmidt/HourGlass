@@ -73,8 +73,6 @@ public:
 private:
   bool isDayHoursRow(const std::size_t row) const;
   bool isItemRow(const std::size_t row) const;
-  static double toDouble(const QString& hours);
-  static QString toString(const double hours, const bool no_zero = false);
 
   Month *_month{nullptr};
 

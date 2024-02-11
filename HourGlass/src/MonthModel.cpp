@@ -37,6 +37,7 @@
 
 #include "Global.h"
 #include "Month.h"
+#include "View.h"
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -159,14 +160,14 @@ QVariant MonthModel::data(const QModelIndex& index,
       } else if( column == COL_Description ) {
         return item.description;
       } else if( column == COL_Hours ) {
-        return toString(item.sumHours());
+        return View::toString(item.sumHours());
       } else if( isDayColumn(column) ) {
-        return toString(item.hours[column - Num_ItemColumns], true);
+        return View::toString(item.hours[column - Num_ItemColumns], true);
       }
 
     } else if( isDayHoursRow(row) ) {
       if( isDayColumn(column) ) {
-        return toString(_month->sumDayHours(column - Num_ItemColumns));
+        return View::toString(_month->sumDayHours(column - Num_ItemColumns));
       }
 
     } // row
@@ -178,7 +179,7 @@ QVariant MonthModel::data(const QModelIndex& index,
       if( column == COL_Description ) {
         return item.description;
       } else if( isDayColumn(column) ) {
-        return toString(item.hours[column - Num_ItemColumns]);
+        return View::toString(item.hours[column - Num_ItemColumns]);
       }
     }
 
@@ -303,7 +304,7 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
         return true;
 
       } else if( isDayColumn(column) ) {
-        item.hours[column - Num_ItemColumns] = toDouble(value.toString());
+        item.hours[column - Num_ItemColumns] = View::toDouble(value.toString());
 
         emit dataChanged(index, index);
 
@@ -335,16 +336,4 @@ bool MonthModel::isDayHoursRow(const std::size_t row) const
 bool MonthModel::isItemRow(const std::size_t row) const
 {
   return row < _month->items.size();
-}
-
-double MonthModel::toDouble(const QString& hours)
-{
-  return QLocale().toDouble(hours);
-}
-
-QString MonthModel::toString(const double hours, const bool no_zero)
-{
-  return no_zero  &&  hours == 0
-      ? QString()
-      : QLocale().toString(hours, 'f', 2);
 }
