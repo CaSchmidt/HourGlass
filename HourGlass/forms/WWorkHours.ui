@@ -15,13 +15,16 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>0</number>
+    <number>4</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>4</number>
+   </property>
+   <property name="rightMargin">
+    <number>4</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>4</number>
    </property>
    <property name="spacing">
     <number>4</number>
@@ -53,7 +56,7 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item row="0" column="1" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>New</string>
@@ -91,7 +94,7 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0" colspan="3">
     <widget class="QGroupBox" name="hoursGroup">
      <property name="title">
       <string>Hours</string>
@@ -165,6 +168,37 @@
      </layout>
     </widget>
    </item>
+   <item row="2" column="2">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Report</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <property name="leftMargin">
+       <number>4</number>
+      </property>
+      <property name="topMargin">
+       <number>4</number>
+      </property>
+      <property name="rightMargin">
+       <number>4</number>
+      </property>
+      <property name="bottomMargin">
+       <number>4</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="generateReportButton">
+        <property name="text">
+         <string>Generate</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
@@ -174,6 +208,7 @@
   <tabstop>hoursView</tabstop>
   <tabstop>projectCombo</tabstop>
   <tabstop>addItemButton</tabstop>
+  <tabstop>generateReportButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

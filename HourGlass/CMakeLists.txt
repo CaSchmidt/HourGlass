@@ -19,6 +19,7 @@ find_package(Qt5Xml 5.12 REQUIRED)
 list(APPEND HourGlass_FORMS
   forms/WMainWindow.ui
   forms/WProjects.ui
+  forms/WReport.ui
   forms/WWorkHours.ui
 )
 
@@ -33,8 +34,10 @@ list(APPEND HourGlass_HEADERS
   include/Project.h
   include/ProjectModel.h
   include/RecentFiles.h
+  include/ReportModel.h
   include/WMainWindow.h
   include/WProjects.h
+  include/WReport.h
   include/WWorkHours.h
   include/XML_io.h
   include/XML_tags.h
@@ -51,8 +54,10 @@ list(APPEND HourGlass_SOURCES
   src/Project.cpp
   src/ProjectModel.cpp
   src/RecentFiles.cpp
+  src/ReportModel.cpp
   src/WMainWindow.cpp
   src/WProjects.cpp
+  src/WReport.cpp
   src/WWorkHours.cpp
   src/XML_io.cpp
 )
