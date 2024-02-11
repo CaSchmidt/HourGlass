@@ -35,5 +35,7 @@ struct Context;
 class QString;
 class QWidget;
 
+bool backupHoursFile(const QString& filename);
+
 bool readHoursFile(Context& context, const QString& filename, QWidget *parent);
 bool writeHoursFile(const QString& filename, const Context& context, QWidget *parent);

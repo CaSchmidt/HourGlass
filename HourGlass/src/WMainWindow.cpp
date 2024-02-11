@@ -139,7 +139,11 @@ void WMainWindow::save()
     return;
   }
 
-  // (2) Write Hours file ////////////////////////////////////////////////////
+  // (2) Backup Hours file ///////////////////////////////////////////////////
+
+  backupHoursFile(filename);
+
+  // (3) Write Hours file ////////////////////////////////////////////////////
 
   if( !writeHoursFile(filename, global, this) ) {
     return;

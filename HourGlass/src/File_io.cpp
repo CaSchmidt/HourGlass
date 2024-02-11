@@ -30,6 +30,8 @@
 *****************************************************************************/
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QDateTime>
+#include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QTextStream>
 #include <QtWidgets/QMessageBox>
@@ -41,9 +43,33 @@
 
 ////// Macros ///////////////////////////////////////////////////////////////
 
+#define BACKUP_DIR  QStringLiteral("bakhours")
+
 #define TR_CTX  "File_io"
 
 ////// Public ////////////////////////////////////////////////////////////////
+
+bool backupHoursFile(const QString& filename)
+{
+  const QFileInfo info(filename);
+  if( !info.exists() ) {
+    return true; // nothing to backup!
+  }
+
+  const QDir dir = info.canonicalPath();
+  dir.mkdir(BACKUP_DIR);
+
+  const QDir bakdir = dir.absoluteFilePath(BACKUP_DIR);
+  if( !bakdir.exists() ) {
+    return false;
+  }
+
+  const QString time = QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-HHmmss"));
+  const QString bakfilename = QStringLiteral("%1-%2.%3")
+      .arg(info.completeBaseName(), time, info.suffix());
+
+  return QFile::copy(filename, bakdir.absoluteFilePath(bakfilename));
+}
 
 bool readHoursFile(Context& context, const QString& filename, QWidget *parent)
 {
