@@ -173,9 +173,9 @@ QString WMainWindow::getFilename(const bool is_save)
 
   const QString filename = is_save
       ? QFileDialog::getSaveFileName(this, tr("Save as"),
-                                     dir, tr("HourGlass files (*.xml)"))
+                                     dir, tr("HourGlass files (*.xhours)"))
       : QFileDialog::getOpenFileName(this, tr("Open"),
-                                     dir, tr("HourGlass files (*.xml)"));
+                                     dir, tr("HourGlass files (*.xhours)"));
 
   return filename;
 }
