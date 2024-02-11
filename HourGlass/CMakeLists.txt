@@ -35,6 +35,7 @@ list(APPEND HourGlass_HEADERS
   include/ProjectModel.h
   include/RecentFiles.h
   include/ReportModel.h
+  include/View.h
   include/WMainWindow.h
   include/WProjects.h
   include/WReport.h
@@ -55,6 +56,7 @@ list(APPEND HourGlass_SOURCES
   src/ProjectModel.cpp
   src/RecentFiles.cpp
   src/ReportModel.cpp
+  src/View.cpp
   src/WMainWindow.cpp
   src/WProjects.cpp
   src/WReport.cpp
