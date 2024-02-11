@@ -45,6 +45,10 @@ struct Context {
 
   void clear();
 
+  void clearModified();
+  bool isModified() const;
+  void setModified();
+
   bool add(Month m);
   Month *findMonth(const monthid_t id) const;
   bool isMonth(const monthid_t id) const;
@@ -59,6 +63,7 @@ struct Context {
   void set(ProjectDB projects);
 
 private:
+  bool _is_modified{false};
   MonthDB _months;
   ProjectDB _projects;
 

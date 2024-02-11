@@ -46,6 +46,7 @@ Context::Context() noexcept
   : _months()
   , _projects()
 {
+  clear();
 }
 
 bool Context::isValid() const
@@ -65,6 +66,24 @@ void Context::clear()
 {
   _months.clear();
   _projects.clear();
+  clearModified();
+}
+
+////// public - Modification State ///////////////////////////////////////////
+
+void Context::clearModified()
+{
+  _is_modified = false;
+}
+
+bool Context::isModified() const
+{
+  return _is_modified;
+}
+
+void Context::setModified()
+{
+  _is_modified = true;
 }
 
 ////// public - Month ////////////////////////////////////////////////////////
@@ -76,6 +95,8 @@ bool Context::add(Month m)
   }
 
   const auto result = _months.emplace(m.id(), std::move(m));
+
+  setModified();
 
   return isMonth(result.first->second.id());
 }
@@ -126,6 +147,8 @@ bool Context::add(Project p)
   }
 
   const auto result = _projects.emplace(p.id(), std::move(p));
+
+  setModified();
 
   return isProject(result.first->second.id());
 }

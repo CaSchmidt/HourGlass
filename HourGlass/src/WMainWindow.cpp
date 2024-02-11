@@ -31,6 +31,7 @@
 
 #include <QtCore/QSettings>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 
 #include "WMainWindow.h"
 #include "ui_WMainWindow.h"
@@ -70,7 +71,7 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
           this, &WMainWindow::saveAs);
 
   connect(ui->quitAction, &QAction::triggered,
-          this, &WMainWindow::close);
+          this, &WMainWindow::quit);
 
   connect(ui->projectsWidget->model(), &ProjectModel::projectsChanged,
           ui->hoursWidget, &WWorkHours::updateProjects);
@@ -115,8 +116,6 @@ void WMainWindow::openFile(const QString& filename)
     return;
   }
 
-  _recent->add(filename);
-
   // (2) Update UI ///////////////////////////////////////////////////////////
 
   ui->hoursWidget->clear();
@@ -125,16 +124,34 @@ void WMainWindow::openFile(const QString& filename)
   // TODO
   ui->projectsWidget->initializeUi(std::move(context._projects));
   ui->hoursWidget->initializeUi(std::move(context._months));
+
+  // (3) Update State ////////////////////////////////////////////////////////
+
+  _lastfilename = filename;
+  _recent->add(filename);
+  global.clearModified();
+}
+
+void WMainWindow::quit()
+{
+  if( global.isModified() ) {
+    const QMessageBox::StandardButton button =
+        QMessageBox::question(this, tr("Quit"), tr("Save changes?"));
+    if( button == QMessageBox::Yes ) {
+      save();
+    }
+  }
+
+  close();
 }
 
 void WMainWindow::save()
 {
   // (1) Get filename ////////////////////////////////////////////////////////
 
-  QString filename = _recent->takeLatest();
-  filename = filename.isEmpty()
+  const QString filename = _lastfilename.isEmpty()
       ? getFilename(true)
-      : filename;
+      : std::move(_lastfilename); // not empty
   if( filename.isEmpty() ) {
     return;
   }
@@ -149,14 +166,18 @@ void WMainWindow::save()
     return;
   }
 
+  // (4) Update State ////////////////////////////////////////////////////////
+
+  _lastfilename = filename;
   _recent->add(filename);
+  global.clearModified();
 }
 
 void WMainWindow::saveAs()
 {
   const QString filename = getFilename(true);
   if( !filename.isEmpty() ) {
-    _recent->add(filename);
+    _lastfilename = filename;
     save();
   }
 }

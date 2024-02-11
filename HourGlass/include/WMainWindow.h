@@ -48,6 +48,7 @@ public:
 private slots:
   void open();
   void openFile(const QString& filename);
+  void quit();
   void save();
   void saveAs();
 
@@ -58,5 +59,6 @@ private:
 
   Ui::WMainWindow *ui{nullptr};
 
+  QString _lastfilename;
   RecentFiles *_recent{nullptr};
 };

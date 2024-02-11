@@ -63,6 +63,8 @@ void MonthModel::addItem(const projectid_t id)
   beginInsertRows(QModelIndex(), rowCount() - 1, rowCount() - 1);
   _month->add(Item(p->id()));
   endInsertRows();
+
+  global.setModified();
 }
 
 void MonthModel::clearMonth()
@@ -296,6 +298,8 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
 
         emit dataChanged(index, index);
 
+        global.setModified();
+
         return true;
 
       } else if( isDayColumn(column) ) {
@@ -308,6 +312,8 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
 
         const QModelIndex dyHrsIdx = MonthModel::index(rowCount() - 1, column);
         emit dataChanged(dyHrsIdx, dyHrsIdx);
+
+        global.setModified();
 
         return true;
 

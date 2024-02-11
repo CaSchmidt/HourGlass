@@ -162,6 +162,8 @@ bool ProjectModel::setData(const QModelIndex& index, const QVariant& value,
       emit dataChanged(index, index);
       emit projectsChanged();
 
+      global.setModified();
+
       return true;
     }
   }
