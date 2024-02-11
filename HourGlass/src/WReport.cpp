@@ -32,6 +32,8 @@
 #include "WReport.h"
 #include "ui_WReport.h"
 
+#include "ReportModel.h"
+
 ////// public ////////////////////////////////////////////////////////////////
 
 WReport::WReport(QWidget *parent, Qt::WindowFlags f)
@@ -39,9 +41,19 @@ WReport::WReport(QWidget *parent, Qt::WindowFlags f)
   , ui{new Ui::WReport}
 {
   ui->setupUi(this);
+
+  // Data Model //////////////////////////////////////////////////////////////
+
+  _model = new ReportModel(ui->reportView);
+  ui->reportView->setModel(_model);
 }
 
 WReport::~WReport()
 {
   delete ui;
+}
+
+void WReport::setMonth(const Month *month)
+{
+  _model->setMonth(month);
 }

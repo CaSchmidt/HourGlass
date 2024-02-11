@@ -37,12 +37,19 @@ namespace Ui {
   class WReport;
 } // namespace Ui
 
+struct Month;
+class ReportModel;
+
 class WReport : public QDialog {
   Q_OBJECT
 public:
   WReport(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
   ~WReport();
 
+  void setMonth(const Month *month);
+
 private:
   Ui::WReport *ui{nullptr};
+
+  ReportModel *_model{nullptr};
 };

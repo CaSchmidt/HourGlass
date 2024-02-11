@@ -36,6 +36,7 @@
 
 #include "Global.h"
 #include "MonthModel.h"
+#include "WReport.h"
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -69,6 +70,8 @@ WWorkHours::WWorkHours(QWidget* parent, Qt::WindowFlags f)
           this, &WWorkHours::addItem);
   connect(ui->addMonthButton, &QPushButton::clicked,
           this, &WWorkHours::addMonth);
+  connect(ui->generateReportButton, &QPushButton::clicked,
+          this, &WWorkHours::generateReport);
 }
 
 WWorkHours::~WWorkHours()
@@ -140,6 +143,13 @@ void WWorkHours::fitColumns()
     return;
   }
   view->resizeSections(QHeaderView::ResizeToContents);
+}
+
+void WWorkHours::generateReport()
+{
+  WReport report(this);
+  report.setMonth(_model->month());
+  report.exec();
 }
 
 void WWorkHours::resetColumns()

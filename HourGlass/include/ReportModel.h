@@ -31,11 +31,39 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QtCore/QAbstractTableModel>
+
+#include "Month.h"
+
+using ReportEntry = std::pair<projectid_t,numhour_t>;
+using Report      = std::vector<ReportEntry>;
 
 class ReportModel : public QAbstractTableModel {
   Q_OBJECT
 public:
+  enum Column : int {
+    COL_Id = 0,
+    COL_Name,
+    COL_Hours,
+    Num_Columns
+  };
+
   ReportModel(QObject *parent = nullptr);
   ~ReportModel();
+
+  void setMonth(const Month *month);
+
+  int columnCount(const QModelIndex& index) const;
+  QVariant data(const QModelIndex& index,
+                int role) const;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                      int role) const;
+  int rowCount(const QModelIndex& index) const;
+
+private:
+  bool isProjectRow(const std::size_t row) const;
+
+  Report _report;
 };

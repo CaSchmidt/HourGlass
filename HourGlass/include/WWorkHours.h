@@ -59,6 +59,7 @@ private slots:
   void addItem();
   void addMonth();
   void fitColumns();
+  void generateReport();
   void resetColumns();
   void setMonth(int index);
   void showWeek();
