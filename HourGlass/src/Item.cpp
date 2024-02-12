@@ -34,8 +34,8 @@
 ////// public ////////////////////////////////////////////////////////////////
 
 Item::Item(const projectid_t projectId,
-           const QString& description) noexcept
-  : description(description)
+           const QString& activity) noexcept
+  : activity(activity)
   , projectId{projectId}
 {
   hours.fill(0);

@@ -36,7 +36,7 @@
 
 struct Item {
   Item(const projectid_t projectId = INVALID_PROJECTID,
-       const QString& description = QString()) noexcept;
+       const QString& activity = QString()) noexcept;
 
   bool isValid() const;
 
@@ -47,7 +47,7 @@ struct Item {
 
   numhour_t sumHours() const;
 
-  QString     description;
+  QString     activity;
   projectid_t projectId{INVALID_PROJECTID};
   Hours       hours;
 };

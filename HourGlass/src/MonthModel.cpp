@@ -157,8 +157,8 @@ QVariant MonthModel::data(const QModelIndex& index,
         if( p != nullptr ) {
           return p->name;
         }
-      } else if( column == COL_Description ) {
-        return item.description;
+      } else if( column == COL_Activity ) {
+        return item.activity;
       } else if( column == COL_Hours ) {
         return View::toString(item.sumHours());
       } else if( isDayColumn(column) ) {
@@ -176,8 +176,8 @@ QVariant MonthModel::data(const QModelIndex& index,
     if( isItemRow(row) ) {
       const Item& item = _month->items[row];
 
-      if( column == COL_Description ) {
-        return item.description;
+      if( column == COL_Activity ) {
+        return item.activity;
       } else if( isDayColumn(column) ) {
         return View::toString(item.hours[column - Num_ItemColumns]);
       }
@@ -215,7 +215,7 @@ Qt::ItemFlags MonthModel::flags(const QModelIndex& index) const
   const std::size_t row = index.row();
 
   if( isItemRow(row) ) {
-    if( column == COL_Description ) {
+    if( column == COL_Activity ) {
       flags |= Qt::ItemIsEditable;
     } else if( isDayColumn(column) ) {
       flags |= Qt::ItemIsEditable;
@@ -236,8 +236,8 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
     if(        orientation == Qt::Horizontal ) {
       if(        section == COL_Project ) {
         return tr("Project");
-      } else if( section == COL_Description ) {
-        return tr("Description");
+      } else if( section == COL_Activity ) {
+        return tr("Activity");
       } else if( section == COL_Hours ) {
         return tr("Hours");
       } else if( isDayColumn(section) ) {
@@ -294,8 +294,8 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
     if( isItemRow(row) ) {
       Item& item = _month->items[row];
 
-      if( column == COL_Description ) {
-        item.description = value.toString();
+      if( column == COL_Activity ) {
+        item.activity = value.toString();
 
         emit dataChanged(index, index);
 

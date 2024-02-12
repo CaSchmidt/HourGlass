@@ -42,7 +42,7 @@ class MonthModel : public QAbstractTableModel {
 public:
   enum Columns : int {
     COL_Project = 0,
-    COL_Description,
+    COL_Activity,
     COL_Hours,
     Num_ItemColumns
   };

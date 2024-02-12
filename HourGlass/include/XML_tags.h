@@ -31,8 +31,8 @@
 
 #pragma once
 
+#define XML_activity     QStringLiteral("activity")
 #define XML_day          QStringLiteral("day")
-#define XML_description  QStringLiteral("description")
 #define XML_did          QStringLiteral("did")
 #define XML_HourGlass    QStringLiteral("HourGlass")
 #define XML_hours        QStringLiteral("hours")

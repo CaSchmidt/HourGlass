@@ -141,8 +141,8 @@ bool xmlReadItem(Item& item, const QDomElement xml_item)
     return false;
   }
 
-  const QDomElement xml_description = xml_item.firstChildElement(XML_description);
-  item.description = xml_description.text();
+  const QDomElement xml_activity = xml_item.firstChildElement(XML_activity);
+  item.activity = xml_activity.text();
 
   return xmlReadHours(item.hours, xml_item);
 }
@@ -290,11 +290,11 @@ void xmlWriteItem(QDomDocument& doc, QDomElement& xml_items, const Item& item)
   xml_item.setAttribute(XML_pid, item.projectId);
   xml_items.appendChild(xml_item);
 
-  QDomElement xml_description = doc.createElement(XML_description);
-  xml_item.appendChild(xml_description);
+  QDomElement xml_activity = doc.createElement(XML_activity);
+  xml_item.appendChild(xml_activity);
 
-  QDomText xml_text = doc.createTextNode(item.description);
-  xml_description.appendChild(xml_text);
+  QDomText xml_text = doc.createTextNode(item.activity);
+  xml_activity.appendChild(xml_text);
 
   xmlWriteHours(doc, xml_item, item);
 }
