@@ -126,6 +126,12 @@ QVariant ReportModel::data(const QModelIndex& index,
           return p->name;
         }
 
+      } else if( column == COL_Annotation ) {
+        const Project *p = global.findProject(id);
+        if( p != nullptr ) {
+          return p->annotation;
+        }
+
       } else if( column == COL_Hours ) {
         return View::toString(_report[row].second);
 
@@ -145,6 +151,8 @@ QVariant ReportModel::headerData(int section, Qt::Orientation orientation,
         return tr("ID");
       } else if( section == COL_Name ) {
         return tr("Name");
+      } else if( section == COL_Annotation ) {
+        return tr("Annotation");
       } else if( section == COL_Hours ) {
         return tr("Hours");
       }

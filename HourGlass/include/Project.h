@@ -43,7 +43,8 @@ constexpr auto INVALID_PROJECTID = std::numeric_limits<projectid_t>::max();
 
 struct Project {
   Project(const projectid_t id = INVALID_PROJECTID,
-          const QString& name = QString()) noexcept;
+          const QString& name = QString(),
+          const QString& annotation = QString()) noexcept;
 
   bool isValid() const;
 
@@ -55,6 +56,7 @@ struct Project {
   projectid_t id() const;
 
   QString name;
+  QString annotation;
 
 private:
   projectid_t _id{INVALID_PROJECTID};

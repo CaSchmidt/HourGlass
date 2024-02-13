@@ -46,6 +46,7 @@ public:
   enum Column : int {
     COL_Id = 0,
     COL_Name,
+    COL_Annotation,
     COL_Hours,
     Num_Columns
   };

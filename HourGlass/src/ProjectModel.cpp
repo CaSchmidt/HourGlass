@@ -97,14 +97,18 @@ QVariant ProjectModel::data(const QModelIndex& index,
       return p->id();
     } else if( column == COL_Name ) {
       return p->name;
+    } else if( column == COL_Annotation ) {
+      return p->annotation;
     }
 
   } else if( role == Qt::EditRole ) {
-    if( column == COL_Name ) {
+    if(        column == COL_Name ) {
       return p->name;
+    } else if( column == COL_Annotation ) {
+      return p->annotation;
     }
 
-  }
+  } // Qt::ItemDataRole
 
   return QVariant();
 }
@@ -112,7 +116,9 @@ QVariant ProjectModel::data(const QModelIndex& index,
 Qt::ItemFlags ProjectModel::flags(const QModelIndex& index) const
 {
   Qt::ItemFlags flags = QAbstractTableModel::flags(index);
-  if( index.column() == COL_Name ) {
+  if(        index.column() == COL_Name ) {
+    flags.setFlag(Qt::ItemIsEditable);
+  } else if( index.column() == COL_Annotation ) {
     flags.setFlag(Qt::ItemIsEditable);
   }
   return flags;
@@ -127,6 +133,8 @@ QVariant ProjectModel::headerData(int section, Qt::Orientation orientation,
         return tr("ID");
       } else if( section == COL_Name ) {
         return tr("Name");
+      } else if( section == COL_Annotation ) {
+        return tr("Annotation");
       }
     }
   }
@@ -166,7 +174,19 @@ bool ProjectModel::setData(const QModelIndex& index, const QVariant& value,
 
       return true;
     }
-  }
+
+  } else if( column == COL_Annotation ) {
+    const QString annotation = value.toString();
+
+    p->annotation = annotation;
+
+    emit dataChanged(index, index);
+
+    global.setModified();
+
+    return true;
+
+  } // column
 
   return false;
 }

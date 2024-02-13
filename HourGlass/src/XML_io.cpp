@@ -232,7 +232,10 @@ bool xmlReadProject(Context& context, const QDomElement& xml_project)
 
   const QString name = xml_name.text().trimmed();
 
-  if( !context.add({id, name}) ) {
+  const QDomElement xml_annotation = xml_project.firstChildElement(XML_annotation);
+  const QString annotation = xml_annotation.text().trimmed();
+
+  if( !context.add({id, name, annotation}) ) {
     return false;
   }
 
@@ -350,10 +353,12 @@ void xmlWriteProject(QDomDocument& doc, QDomElement& xml_projects, const Project
   xml_project.setAttribute(XML_pid, project.id());
 
   QDomElement xml_name = doc.createElement(XML_name);
+  xml_name.appendChild(doc.createTextNode(project.name));
   xml_project.appendChild(xml_name);
 
-  QDomText xml_text = doc.createTextNode(project.name);
-  xml_name.appendChild(xml_text);
+  QDomElement xml_annotation = doc.createElement(XML_annotation);
+  xml_annotation.appendChild(doc.createTextNode(project.annotation));
+  xml_project.appendChild(xml_annotation);
 
   xml_projects.appendChild(xml_project);
 }

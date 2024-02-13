@@ -33,8 +33,10 @@
 
 ////// public ////////////////////////////////////////////////////////////////
 
-Project::Project(const projectid_t id, const QString& name) noexcept
+Project::Project(const projectid_t id, const QString& name,
+                 const QString& annotation) noexcept
   : name(name)
+  , annotation(annotation)
   , _id{id}
 {
 }
