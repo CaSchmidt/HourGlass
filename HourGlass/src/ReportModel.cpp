@@ -110,30 +110,29 @@ QVariant ReportModel::data(const QModelIndex& index,
     return QVariant();
   }
 
-  const int      column = index.column();
-  const std::size_t row = index.row();
+  const int column = index.column();
+  const int    row = index.row();
 
   if( role == Qt::DisplayRole ) {
     if( isProjectRow(row) ) {
-      const projectid_t id = _report[row].first;
+      const ReportEntry& entry = _report[size_type(row)];
+
+      const Project *p = global.findProject(entry.first);
+      if( p == nullptr ) {
+        return QVariant();
+      }
 
       if(        column == COL_Id ) {
-        return id;
+        return entry.first;
 
       } else if( column == COL_Name ) {
-        const Project *p = global.findProject(id);
-        if( p != nullptr ) {
-          return p->name;
-        }
+        return p->name;
 
       } else if( column == COL_Annotation ) {
-        const Project *p = global.findProject(id);
-        if( p != nullptr ) {
-          return p->annotation;
-        }
+        return p->annotation;
 
       } else if( column == COL_Hours ) {
-        return View::toString(_report[row].second);
+        return View::toString(entry.second);
 
       }
     } // row
@@ -176,7 +175,7 @@ int ReportModel::rowCount(const QModelIndex& /*index*/) const
 
 ////// private ///////////////////////////////////////////////////////////////
 
-bool ReportModel::isProjectRow(const std::size_t row) const
+bool ReportModel::isProjectRow(const int row) const
 {
-  return row < _report.size();
+  return size_type(row) < _report.size();
 }

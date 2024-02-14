@@ -64,7 +64,9 @@ public:
   int rowCount(const QModelIndex& index) const;
 
 private:
-  bool isProjectRow(const std::size_t row) const;
+  using size_type = std::size_t;
+
+  bool isProjectRow(const int row) const;
 
   Report _report;
 };
