@@ -31,6 +31,8 @@
 
 #include <unordered_map>
 
+#include <QtGui/QBrush>
+
 #include "ReportModel.h"
 
 #include "Global.h"
@@ -74,6 +76,17 @@ namespace priv {
     return result;
   }
 
+  auto lambda_sum = [](const numhour_t& lhs, const ReportEntry& rhs) -> numhour_t
+  {
+    return lhs + rhs.second;
+  };
+
+  numhour_t sum(const Report& report)
+  {
+    return std::accumulate(report.cbegin(), report.cend(),
+                           numhour_t{0}, lambda_sum);
+  }
+
 } // namespace priv
 
 ////// public ////////////////////////////////////////////////////////////////
@@ -114,7 +127,7 @@ QVariant ReportModel::data(const QModelIndex& index,
   const int    row = index.row();
 
   if( role == Qt::DisplayRole ) {
-    if( isProjectRow(row) ) {
+    if(        isProjectRow(row) ) {
       const ReportEntry& entry = _report[size_type(row)];
 
       const Project *p = global.findProject(entry.first);
@@ -134,8 +147,33 @@ QVariant ReportModel::data(const QModelIndex& index,
       } else if( column == COL_Hours ) {
         return View::toString(entry.second);
 
-      }
+      } // column
+
+    } else if( isSumRow(row) ) {
+      if(        column == COL_Annotation ) {
+        return tr("Sum");
+
+      } else if( column == COL_Hours ) {
+        return priv::sum(_report);
+
+      } // column
+
     } // row
+
+  } else if( role == Qt::BackgroundRole ) {
+    if( column == COL_Hours ) {
+      return QBrush(Qt::yellow);
+
+    } // column
+
+  } else if( role == Qt::TextAlignmentRole ) {
+    if( column == COL_Annotation ) {
+      const Qt::Alignment alignment = Qt::AlignRight | Qt::AlignVCenter;
+
+      return QVariant(alignment);
+
+    } // column
+
   } // Qt::ItemDataRole
 
   return QVariant();
@@ -170,7 +208,7 @@ QVariant ReportModel::headerData(int section, Qt::Orientation orientation,
 
 int ReportModel::rowCount(const QModelIndex& /*index*/) const
 {
-  return int(_report.size());
+  return int(_report.size()) + 1;
 }
 
 ////// private ///////////////////////////////////////////////////////////////
@@ -178,4 +216,9 @@ int ReportModel::rowCount(const QModelIndex& /*index*/) const
 bool ReportModel::isProjectRow(const int row) const
 {
   return size_type(row) < _report.size();
+}
+
+bool ReportModel::isSumRow(const int row) const
+{
+  return size_type(row) == _report.size();
 }

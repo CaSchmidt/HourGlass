@@ -67,6 +67,7 @@ private:
   using size_type = std::size_t;
 
   bool isProjectRow(const int row) const;
+  bool isSumRow(const int row) const;
 
   Report _report;
 };
