@@ -36,6 +36,7 @@
 
 #include "Global.h"
 #include "MonthModel.h"
+#include "ProjectDelegate.h"
 #include "WReport.h"
 
 ////// public ////////////////////////////////////////////////////////////////
@@ -54,6 +55,11 @@ WWorkHours::WWorkHours(QWidget* parent, Qt::WindowFlags f)
 
   _model = new MonthModel(ui->hoursView);
   ui->hoursView->setModel(_model);
+
+  // Item Delegate ///////////////////////////////////////////////////////////
+
+  ui->hoursView->setItemDelegateForColumn(MonthModel::COL_Project,
+                                          new ProjectDelegate(ui->hoursView));
 
   // Hours View Actions //////////////////////////////////////////////////////
 

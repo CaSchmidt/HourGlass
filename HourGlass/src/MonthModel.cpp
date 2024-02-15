@@ -176,12 +176,18 @@ QVariant MonthModel::data(const QModelIndex& index,
     if( isItemRow(row) ) {
       const Item& item = _month->items[row];
 
-      if( column == COL_Activity ) {
+      if(        column == COL_Project ) {
+        return item.projectId;
+
+      } else if( column == COL_Activity ) {
         return item.activity;
+
       } else if( isDayColumn(column) ) {
         return View::toString(item.hours[column - Num_ItemColumns]);
-      }
-    }
+
+      } // column
+
+    } // row
 
   } else if( role == Qt::BackgroundRole ) {
     if(        isItemRow(row) ) {
@@ -215,12 +221,18 @@ Qt::ItemFlags MonthModel::flags(const QModelIndex& index) const
   const std::size_t row = index.row();
 
   if( isItemRow(row) ) {
-    if( column == COL_Activity ) {
+    if(        column == COL_Project ) {
       flags |= Qt::ItemIsEditable;
+
+    } else if( column == COL_Activity ) {
+      flags |= Qt::ItemIsEditable;
+
     } else if( isDayColumn(column) ) {
       flags |= Qt::ItemIsEditable;
-    }
-  }
+
+    } // column
+
+  } // row
 
   return flags;
 }
@@ -294,7 +306,16 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
     if( isItemRow(row) ) {
       Item& item = _month->items[row];
 
-      if( column == COL_Activity ) {
+      if(        column == COL_Project ) {
+        item.projectId = value.value<projectid_t>();
+
+        emit dataChanged(index, index);
+
+        global.setModified();
+
+        return true;
+
+      } else if( column == COL_Activity ) {
         item.activity = value.toString();
 
         emit dataChanged(index, index);
@@ -321,6 +342,7 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
       } // column
 
     } // row
+
   } // Qt::ItemRole
 
   return false;
