@@ -32,6 +32,7 @@ list(APPEND HourGlass_HEADERS
   include/Month.h
   include/MonthModel.h
   include/Project.h
+  include/ProjectDelegate.h
   include/ProjectModel.h
   include/RecentFiles.h
   include/ReportModel.h
@@ -53,6 +54,7 @@ list(APPEND HourGlass_SOURCES
   src/Month.cpp
   src/MonthModel.cpp
   src/Project.cpp
+  src/ProjectDelegate.cpp
   src/ProjectModel.cpp
   src/RecentFiles.cpp
   src/ReportModel.cpp
