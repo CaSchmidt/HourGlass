@@ -71,8 +71,10 @@ public:
                int role);
 
 private:
-  bool isDayHoursRow(const std::size_t row) const;
-  bool isItemRow(const std::size_t row) const;
+  using size_type = std::size_t;
+
+  bool isDayHoursRow(const int row) const;
+  bool isItemRow(const int row) const;
 
   Month *_month{nullptr};
 

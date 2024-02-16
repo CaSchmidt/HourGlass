@@ -196,6 +196,6 @@ bool ProjectModel::setData(const QModelIndex& index, const QVariant& value,
 Project *ProjectModel::project(const int row) const
 {
   return 0 <= row  &&  row < rowCount()
-      ? global.findProject(_projects[std::size_t(row)])
+      ? global.findProject(_projects[size_type(row)])
       : nullptr;
 }

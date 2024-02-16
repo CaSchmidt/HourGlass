@@ -145,12 +145,12 @@ QVariant MonthModel::data(const QModelIndex& index,
     return QVariant();
   }
 
-  const int      column = index.column();
-  const std::size_t row = index.row();
+  const int column = index.column();
+  const int    row = index.row();
 
   if(        role == Qt::DisplayRole ) {
     if( isItemRow(row) ) {
-      const Item& item = _month->items[row];
+      const Item& item = _month->items[size_type(row)];
 
       if(        column == COL_Project ) {
         const Project *p = global.findProject(item.projectId);
@@ -174,7 +174,7 @@ QVariant MonthModel::data(const QModelIndex& index,
 
   } else if( role == Qt::EditRole ) {
     if( isItemRow(row) ) {
-      const Item& item = _month->items[row];
+      const Item& item = _month->items[size_type(row)];
 
       if(        column == COL_Project ) {
         return item.projectId;
@@ -217,8 +217,8 @@ Qt::ItemFlags MonthModel::flags(const QModelIndex& index) const
     return flags;
   }
 
-  const int      column = index.column();
-  const std::size_t row = index.row();
+  const int column = index.column();
+  const int    row = index.row();
 
   if( isItemRow(row) ) {
     if(        column == COL_Project ) {
@@ -299,12 +299,12 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
     return false;
   }
 
-  const int      column = index.column();
-  const std::size_t row = index.row();
+  const int column = index.column();
+  const int    row = index.row();
 
   if( role == Qt::EditRole ) {
     if( isItemRow(row) ) {
-      Item& item = _month->items[row];
+      Item& item = _month->items[size_type(row)];
 
       if(        column == COL_Project ) {
         item.projectId = value.value<projectid_t>();
@@ -350,12 +350,12 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
 
 ////// private ///////////////////////////////////////////////////////////////
 
-bool MonthModel::isDayHoursRow(const std::size_t row) const
+bool MonthModel::isDayHoursRow(const int row) const
 {
-  return row == _month->items.size();
+  return size_type(row) == _month->items.size();
 }
 
-bool MonthModel::isItemRow(const std::size_t row) const
+bool MonthModel::isItemRow(const int row) const
 {
-  return row < _month->items.size();
+  return 0 <= row  &&  size_type(row) < _month->items.size();
 }

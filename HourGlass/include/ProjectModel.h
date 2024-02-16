@@ -63,6 +63,8 @@ public:
                int role);
 
 private:
+  using size_type = std::size_t;
+
   Project *project(const int row) const;
 
   ProjectIDs _projects;
