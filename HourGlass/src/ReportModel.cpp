@@ -167,12 +167,15 @@ QVariant ReportModel::data(const QModelIndex& index,
     } // column
 
   } else if( role == Qt::TextAlignmentRole ) {
-    if( column == COL_Annotation ) {
-      const Qt::Alignment alignment = Qt::AlignRight | Qt::AlignVCenter;
+    if( isSumRow(row) ) {
+      if( column == COL_Annotation ) {
+        const Qt::Alignment alignment = Qt::AlignRight | Qt::AlignVCenter;
 
-      return QVariant(alignment);
+        return QVariant(alignment);
 
-    } // column
+      } // column
+
+    } // row
 
   } // Qt::ItemDataRole
 
