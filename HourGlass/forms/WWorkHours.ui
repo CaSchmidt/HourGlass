@@ -118,7 +118,7 @@
       <item>
        <widget class="QTableView" name="hoursView">
         <property name="editTriggers">
-         <set>QAbstractItemView::DoubleClicked</set>
+         <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked</set>
         </property>
         <property name="alternatingRowColors">
          <bool>true</bool>
