@@ -44,7 +44,7 @@
 
 ////// Private ///////////////////////////////////////////////////////////////
 
-inline QString toString(const numhour_t hour)
+inline QString toQString(const numhour_t hour)
 {
   return QString::number(hour, 'f', 2);
 }
@@ -282,7 +282,7 @@ void xmlWriteHours(QDomDocument& doc, QDomElement& xml_item, const Item& item)
     xml_day.setAttribute(XML_did, i);
     xml_hours.appendChild(xml_day);
 
-    QDomText xml_text = doc.createTextNode(toString(item.hours[i]));
+    QDomText xml_text = doc.createTextNode(toQString(item.hours[i]));
     xml_day.appendChild(xml_text);
   }
 }
