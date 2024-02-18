@@ -39,6 +39,23 @@
 #include "Month.h"
 #include "View.h"
 
+////// Private ///////////////////////////////////////////////////////////////
+
+namespace priv {
+
+  numhour_t sum(const Month& month)
+  {
+    auto lambda_sum = [](const numhour_t& lhs, const Item& rhs) -> numhour_t
+    {
+      return lhs + rhs.sumHours();
+    };
+
+    return std::accumulate(month.items.cbegin(), month.items.cend(),
+                           numhour_t{0}, lambda_sum);
+  }
+
+} // namespace priv
+
 ////// public ////////////////////////////////////////////////////////////////
 
 MonthModel::MonthModel(QObject *parent)
@@ -166,7 +183,11 @@ QVariant MonthModel::data(const QModelIndex& index,
       }
 
     } else if( isDayHoursRow(row) ) {
-      if( isDayColumn(column) ) {
+      if(        column == COL_Activity ) {
+        return tr("Sum");
+      } else if( column == COL_Hours ) {
+        return View::toString(priv::sum(*_month));
+      } else if( isDayColumn(column) ) {
         return View::toString(_month->sumDayHours(column - Num_ItemColumns));
       }
 
@@ -199,8 +220,19 @@ QVariant MonthModel::data(const QModelIndex& index,
         }
       }
     } else if( isDayHoursRow(row) ) {
-      if( isDayColumn(column) ) {
+      if(        column == COL_Hours ) {
         return QBrush(Qt::yellow);
+      } else if( isDayColumn(column) ) {
+        return QBrush(Qt::yellow);
+      }
+    }
+
+  } else if( role == Qt::TextAlignmentRole ) {
+    if( isDayHoursRow(row) ) {
+      if( column == COL_Activity ) {
+        const Qt::Alignment alignment = Qt::AlignRight | Qt::AlignVCenter;
+
+        return QVariant(alignment);
       }
     }
 
@@ -329,11 +361,14 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
 
         emit dataChanged(index, index);
 
-        const QModelIndex hrsIdx = MonthModel::index(index.row(), COL_Hours);
-        emit dataChanged(hrsIdx, hrsIdx);
+        const QModelIndex itemHoursIdx = MonthModel::index(row, COL_Hours);
+        emit dataChanged(itemHoursIdx, itemHoursIdx);
 
-        const QModelIndex dyHrsIdx = MonthModel::index(rowCount() - 1, column);
-        emit dataChanged(dyHrsIdx, dyHrsIdx);
+        const QModelIndex monthHoursIdx = MonthModel::index(rowCount() - 1, COL_Hours);
+        emit dataChanged(monthHoursIdx, monthHoursIdx);
+
+        const QModelIndex dayHoursIdx = MonthModel::index(rowCount() - 1, column);
+        emit dataChanged(dayHoursIdx, dayHoursIdx);
 
         global.setModified();
 
