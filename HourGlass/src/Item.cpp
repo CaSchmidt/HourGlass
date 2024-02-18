@@ -29,6 +29,8 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <numeric>
+
 #include "Item.h"
 
 ////// public ////////////////////////////////////////////////////////////////
@@ -48,9 +50,6 @@ bool Item::isValid() const
 
 numhour_t Item::sumHours() const
 {
-  numhour_t result = 0;
-  for(std::size_t i = 0; i < hours.size(); i++) {
-    result += hours[i];
-  }
-  return result;
+  return std::accumulate(hours.cbegin(), hours.cend(),
+                         numhour_t{0});
 }

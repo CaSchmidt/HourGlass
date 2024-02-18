@@ -76,13 +76,13 @@ namespace priv {
     return result;
   }
 
-  auto lambda_sum = [](const numhour_t& lhs, const ReportEntry& rhs) -> numhour_t
-  {
-    return lhs + rhs.second;
-  };
-
   numhour_t sum(const Report& report)
   {
+    auto lambda_sum = [](const numhour_t& lhs, const ReportEntry& rhs) -> numhour_t
+    {
+      return lhs + rhs.second;
+    };
+
     return std::accumulate(report.cbegin(), report.cend(),
                            numhour_t{0}, lambda_sum);
   }
