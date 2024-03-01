@@ -276,8 +276,8 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
   }
 
-  if( role == Qt::DisplayRole ) {
-    if(        orientation == Qt::Horizontal ) {
+  if(        orientation == Qt::Horizontal ) {
+    if(        role == Qt::DisplayRole ) {
       if(        section == COL_Project ) {
         return tr("Project");
       } else if( section == COL_Activity ) {
@@ -298,21 +298,24 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
         }
       }
 
-    } else if( orientation == Qt::Vertical ) {
+    } else if( role == Qt::ForegroundRole ) {
+      if( isDayColumn(section) ) {
+        if( _month->isCurrentDay(day(section)) ) {
+          return QBrush(Qt::red);
+        }
+      }
+
+    } // Qt::ItemDataRole
+
+  } else if( orientation == Qt::Vertical ) {
+    if( role == Qt::DisplayRole ) {
       if( isItemRow(section) ) {
         return section + 1;
       }
 
-    }
+    } // Qt::ItemDataRole
 
-  } else if( role == Qt::ForegroundRole ) {
-    if( isDayColumn(section) ) {
-      if( _month->isCurrentDay(day(section)) ) {
-        return QBrush(Qt::red);
-      }
-    }
-
-  } // DisplayRole
+  } // Qt::Orientation
 
   return QVariant();
 }
