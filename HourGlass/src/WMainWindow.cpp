@@ -207,6 +207,7 @@ void WMainWindow::loadSettings()
                      QStringLiteral("csLabs"),
                      QStringLiteral("HourGlass"));
 
+  ui->hoursWidget->load(settings);
   _recent->load(settings);
 }
 
@@ -217,6 +218,7 @@ void WMainWindow::saveSettings()
                      QStringLiteral("HourGlass"));
   settings.clear();
 
+  ui->hoursWidget->save(settings);
   _recent->save(settings);
 
   settings.sync();

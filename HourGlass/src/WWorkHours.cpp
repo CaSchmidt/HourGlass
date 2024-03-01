@@ -29,6 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <QtCore/QSettings>
 #include <QtWidgets/QAction>
 
 #include "WWorkHours.h"
@@ -38,6 +39,13 @@
 #include "MonthModel.h"
 #include "ProjectDelegate.h"
 #include "WReport.h"
+
+////// Macros ////////////////////////////////////////////////////////////////
+
+#define SETTINGS_GROUP  QStringLiteral("WWorkHours")
+#define SETTINGS_VALUE  QStringLiteral("%1/%2")
+
+#define SETTING_SELECT_ROWS  QStringLiteral("select_rows")
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -101,6 +109,30 @@ void WWorkHours::initializeUi(MonthDB months)
 MonthModel *WWorkHours::model() const
 {
   return _model;
+}
+
+void WWorkHours::load(const QSettings& settings)
+{
+  {
+    const bool select_rows = settings.value(SETTINGS_VALUE.arg(SETTINGS_GROUP, SETTING_SELECT_ROWS),
+                                            false).toBool();
+    if( select_rows ) {
+      ui->hoursView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    } else {
+      ui->hoursView->setSelectionBehavior(QAbstractItemView::SelectItems);
+    }
+  }
+}
+
+void WWorkHours::save(QSettings& settings) const
+{
+  settings.remove(SETTINGS_GROUP);
+
+  {
+    const bool select_rows = ui->hoursView->selectionBehavior() == QAbstractItemView::SelectRows;
+    settings.setValue(SETTINGS_VALUE.arg(SETTINGS_GROUP, SETTING_SELECT_ROWS),
+                      select_rows);
+  }
 }
 
 ////// public slots //////////////////////////////////////////////////////////

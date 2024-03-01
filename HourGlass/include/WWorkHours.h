@@ -40,6 +40,7 @@ namespace Ui {
 } // namespace Ui
 
 class MonthModel;
+class QSettings;
 
 class WWorkHours : public QWidget {
   Q_OBJECT
@@ -51,6 +52,9 @@ public:
   void initializeUi(MonthDB months);
 
   MonthModel *model() const;
+
+  void load(const QSettings& settings);
+  void save(QSettings& settings) const;
 
 public slots:
   void updateProjects();
