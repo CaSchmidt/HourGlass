@@ -111,7 +111,14 @@
     <addaction name="separator"/>
     <addaction name="quitAction"/>
    </widget>
+   <widget class="QMenu" name="viewMenu">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="selectRowsAction"/>
+   </widget>
    <addaction name="fileMenu"/>
+   <addaction name="viewMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="quitAction">
@@ -137,6 +144,14 @@
   <action name="recentFilesAction">
    <property name="text">
     <string>&amp;Recent files</string>
+   </property>
+  </action>
+  <action name="selectRowsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Select &amp;rows</string>
    </property>
   </action>
  </widget>

@@ -53,10 +53,13 @@ public:
 
   MonthModel *model() const;
 
+  bool isSelectRows() const;
+
   void load(const QSettings& settings);
   void save(QSettings& settings) const;
 
 public slots:
+  void setSelectRows(const bool on);
   void updateProjects();
 
 private slots:
@@ -72,8 +75,6 @@ private slots:
 private:
   void initHoursMenu();
   void initMonthsCombo();
-  bool isSelectRows() const;
-  void setSelectRows(const bool on);
 
   MonthModel *_model{nullptr};
   Ui::WWorkHours *ui{nullptr};

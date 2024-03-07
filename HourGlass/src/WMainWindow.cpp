@@ -60,6 +60,12 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   ui->saveAction->setShortcut(Qt::CTRL + Qt::Key_S);
   ui->quitAction->setShortcut(Qt::CTRL + Qt::Key_Q);
 
+  // Settings ////////////////////////////////////////////////////////////////
+
+  loadSettings();
+
+  ui->selectRowsAction->setChecked(ui->hoursWidget->isSelectRows());
+
   // Signals & Slots /////////////////////////////////////////////////////////
 
   connect(ui->openAction, &QAction::triggered,
@@ -79,9 +85,8 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   connect(_recent, &RecentFiles::selected,
           this, &WMainWindow::openFile);
 
-  // Settings ////////////////////////////////////////////////////////////////
-
-  loadSettings();
+  connect(ui->selectRowsAction, &QAction::triggered,
+          ui->hoursWidget, &WWorkHours::setSelectRows);
 }
 
 WMainWindow::~WMainWindow()

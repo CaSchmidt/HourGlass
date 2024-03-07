@@ -111,6 +111,11 @@ MonthModel *WWorkHours::model() const
   return _model;
 }
 
+bool WWorkHours::isSelectRows() const
+{
+  return ui->hoursView->selectionBehavior() == QAbstractItemView::SelectRows;
+}
+
 void WWorkHours::load(const QSettings& settings)
 {
   setSelectRows(settings.value(SETTINGS_VALUE.arg(SETTINGS_GROUP, SETTING_SELECT_ROWS),
@@ -126,6 +131,16 @@ void WWorkHours::save(QSettings& settings) const
 }
 
 ////// public slots //////////////////////////////////////////////////////////
+
+void WWorkHours::setSelectRows(const bool on)
+{
+  if( on ) {
+    ui->hoursView->setSelectionBehavior(QAbstractItemView::SelectRows);
+  } else {
+    ui->hoursView->setSelectionBehavior(QAbstractItemView::SelectItems);
+  }
+  ui->hoursView->clearSelection();
+}
 
 void WWorkHours::updateProjects()
 {
@@ -266,19 +281,5 @@ void WWorkHours::initMonthsCombo()
     }
 
     ui->monthCombo->addItem(m->toString(), m->id());
-  }
-}
-
-bool WWorkHours::isSelectRows() const
-{
-  return ui->hoursView->selectionBehavior() == QAbstractItemView::SelectRows;
-}
-
-void WWorkHours::setSelectRows(const bool on)
-{
-  if( on ) {
-    ui->hoursView->setSelectionBehavior(QAbstractItemView::SelectRows);
-  } else {
-    ui->hoursView->setSelectionBehavior(QAbstractItemView::SelectItems);
   }
 }
