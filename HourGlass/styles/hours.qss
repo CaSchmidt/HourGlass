@@ -1,0 +1,11 @@
+/*
+ * cf. qtbase/src/widgets/styles/qcommonstyle.cpp
+ *
+ * QCommonStyle::drawControl(CE_ItemViewItem)
+ * QCommonStyle::drawPrimitive(PE_FrameFocusRect)
+ */
+
+QTableView#hoursView::item:focus {
+  color: white;
+  background: red;
+}
