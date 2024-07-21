@@ -45,7 +45,8 @@
 #define SETTINGS_GROUP  QStringLiteral("WWorkHours")
 #define SETTINGS_VALUE  QStringLiteral("%1/%2")
 
-#define SETTING_SELECT_ROWS  QStringLiteral("select_rows")
+#define SETTING_SELECT_ROWS       QStringLiteral("select_rows")
+#define SETTING_SHOW_PROJECT_ROW  QStringLiteral("show_project_row")
 
 ////// public ////////////////////////////////////////////////////////////////
 
@@ -120,6 +121,8 @@ void WWorkHours::load(const QSettings& settings)
 {
   setSelectRows(settings.value(SETTINGS_VALUE.arg(SETTINGS_GROUP, SETTING_SELECT_ROWS),
                                false).toBool());
+  _model->setShowProjectRow(settings.value(SETTINGS_VALUE.arg(SETTINGS_GROUP, SETTING_SHOW_PROJECT_ROW),
+                                           false).toBool());
 }
 
 void WWorkHours::save(QSettings& settings) const
@@ -128,6 +131,8 @@ void WWorkHours::save(QSettings& settings) const
 
   settings.setValue(SETTINGS_VALUE.arg(SETTINGS_GROUP, SETTING_SELECT_ROWS),
                     isSelectRows());
+  settings.setValue(SETTINGS_VALUE.arg(SETTINGS_GROUP, SETTING_SHOW_PROJECT_ROW),
+                    _model->isShowProjectRow());
 }
 
 ////// public slots //////////////////////////////////////////////////////////

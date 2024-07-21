@@ -111,6 +111,11 @@ bool MonthModel::isDayColumn(const int column) const
       : false;
 }
 
+bool MonthModel::isShowProjectRow() const
+{
+  return _showProjectRow;
+}
+
 bool MonthModel::isValid() const
 {
   return _month != nullptr;
@@ -310,8 +315,16 @@ QVariant MonthModel::headerData(int section, Qt::Orientation orientation,
   } else if( orientation == Qt::Vertical ) {
     if( role == Qt::DisplayRole ) {
       if( isItemRow(section) ) {
-        return section + 1;
-      }
+        if( _showProjectRow ) {
+          const Item&       item = _month->items[size_type(section)];
+          const Project *project = global.findProject(item.projectId);
+          if( project != nullptr ) {
+            return project->name;
+          }
+        } else {
+          return section + 1;
+        }
+      } // isItemRow()
 
     } // Qt::ItemDataRole
 
@@ -345,6 +358,7 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
         item.projectId = value.value<projectid_t>();
 
         emit dataChanged(index, index);
+        emit headerDataChanged(Qt::Vertical, row, row);
 
         global.setModified();
 
@@ -384,6 +398,15 @@ bool MonthModel::setData(const QModelIndex& index, const QVariant& value,
   } // Qt::ItemRole
 
   return false;
+}
+
+////// public slots //////////////////////////////////////////////////////////
+
+void MonthModel::setShowProjectRow(const bool on)
+{
+  _showProjectRow = on;
+
+  emit headerDataChanged(Qt::Vertical, 0, rowCount() - 1);
 }
 
 ////// private ///////////////////////////////////////////////////////////////

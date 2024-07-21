@@ -55,6 +55,7 @@ public:
   int day(const int column) const;
   bool isCurrentMonth() const;
   bool isDayColumn(const int column) const;
+  bool isShowProjectRow() const;
   bool isValid() const;
   Month *month() const;
   void setMonth(Month *month);
@@ -70,6 +71,9 @@ public:
   bool setData(const QModelIndex& index, const QVariant& value,
                int role);
 
+public slots:
+  void setShowProjectRow(const bool on);
+
 private:
   using size_type = std::size_t;
 
@@ -77,6 +81,7 @@ private:
   bool isItemRow(const int row) const;
 
   Month *_month{nullptr};
+  bool   _showProjectRow{false};
 
 signals:
   void monthChanged(const QString&);

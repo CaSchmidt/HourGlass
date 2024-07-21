@@ -116,6 +116,7 @@
      <string>&amp;View</string>
     </property>
     <addaction name="selectRowsAction"/>
+    <addaction name="showProjectRowAction"/>
    </widget>
    <addaction name="fileMenu"/>
    <addaction name="viewMenu"/>
@@ -152,6 +153,14 @@
    </property>
    <property name="text">
     <string>Select &amp;rows</string>
+   </property>
+  </action>
+  <action name="showProjectRowAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;project row</string>
    </property>
   </action>
  </widget>

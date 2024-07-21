@@ -38,6 +38,7 @@
 
 #include "File_io.h"
 #include "Global.h"
+#include "MonthModel.h"
 #include "ProjectModel.h"
 #include "RecentFiles.h"
 
@@ -65,6 +66,7 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   loadSettings();
 
   ui->selectRowsAction->setChecked(ui->hoursWidget->isSelectRows());
+  ui->showProjectRowAction->setChecked(ui->hoursWidget->model()->isShowProjectRow());
 
   // Signals & Slots /////////////////////////////////////////////////////////
 
@@ -87,6 +89,9 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
   connect(ui->selectRowsAction, &QAction::triggered,
           ui->hoursWidget, &WWorkHours::setSelectRows);
+
+  connect(ui->showProjectRowAction, &QAction::triggered,
+          ui->hoursWidget->model(), &MonthModel::setShowProjectRow);
 }
 
 WMainWindow::~WMainWindow()
